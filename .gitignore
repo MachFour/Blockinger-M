@@ -1,2 +1,8 @@
-/bin
-/LICENSE.md
+.gradle
+.idea
+*.class
+app/build
+gradle-wrapper.jar
+gradlew
+gradlew.bat
+local.properties

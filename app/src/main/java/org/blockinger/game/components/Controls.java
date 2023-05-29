@@ -49,15 +49,10 @@ import android.preference.PreferenceManager;
 
 public class Controls extends Component {
 
-	// Constants
-
-	// Stuff
-	private Board board;
-	//private boolean initialized;
 	private Vibrator v;
 	private int vibrationOffset;
 	private long shortVibeTime;
-	private int[] lineThresholds;
+	private final int[] lineThresholds;
 
 	// Player Controls
 	private boolean playerSoftDrop;
@@ -74,8 +69,8 @@ public class Controls extends Component {
 	private boolean rightRotation;
 	private boolean buttonVibrationEnabled;
 	private boolean eventVibrationEnabled;
-	private int initialHIntervalFactor;
-	private int initialVIntervalFactor;
+	private final int initialHIntervalFactor;
+	private final int initialVIntervalFactor;
 	private Rect previewBox;
 	private boolean boardTouched;
 
@@ -164,7 +159,6 @@ public class Controls extends Component {
 	}
 
 	public void rotateLeftReleased() {
-    	//Thread.yield();
 	}
 
 	public void rotateRightPressed() {
@@ -172,17 +166,14 @@ public class Controls extends Component {
 		host.game.action();
 		vibrateShort();
 		host.sound.buttonSound();
-	    //Thread.yield();
 	}
 
 	public void rotateRightReleased() {
-    	//Thread.yield();
 	}
 
 	public void downButtonReleased() {
 		clearPlayerSoftDrop = true;
 		vibrateShort();
-	    //Thread.yield();
 	}
 
 	public void downButtonPressed() {
@@ -408,14 +399,6 @@ public class Controls extends Component {
 
 		} else
 			host.game.setNextPlayerDropTime(gameTime);
-	}
-
-	public void setBoard(Board instance2) {
-		this.board = instance2;
-	}
-
-	public Board getBoard() {
-		return this.board;
 	}
 
 	/**

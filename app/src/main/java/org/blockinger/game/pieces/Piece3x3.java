@@ -46,8 +46,6 @@ public abstract class Piece3x3 extends Piece {
 
 	/**
 	 * Always call super(); first.
-	 * @param width
-	 * @param height
 	 */
 	protected Piece3x3(Context c) {
 		super(c,3);

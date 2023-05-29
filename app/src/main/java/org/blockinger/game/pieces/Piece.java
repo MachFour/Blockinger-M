@@ -71,8 +71,6 @@ public abstract class Piece {
 
 	/**
 	 * Always call super(); first.
-	 * @param width
-	 * @param height
 	 */
 	protected Piece(Context c, int dimension) {
 		this.dim = dimension;
@@ -242,9 +240,6 @@ public abstract class Piece {
 	 *
 	 * @param xOffset board x offset
 	 * @param yOffset board y offset
-	 * @param squareSize
-	 * @param c
-	 * @param view
 	 */
 	public void drawOnBoard(int xOffset, int yOffset, int ss, Canvas c) {
 		if(!active)

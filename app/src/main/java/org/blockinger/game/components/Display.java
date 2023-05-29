@@ -53,14 +53,14 @@ public class Display extends Component {
 
 	private int prevPhantomY;
 	private boolean dropPhantom;
-	private Paint paint;
+	private final Paint paint;
 	private int gridRowBorder;
 	private int gridColumnBorder;
 	private int squaresize;
 	private int rowOffset;
-	private int rows;
+	private final int rows;
 	private int columnOffset;
-	private int columns;
+	private final int columns;
 	private boolean landscapeInitialized;
 	private int prev_top;
 	private int prev_bottom;
@@ -68,15 +68,13 @@ public class Display extends Component {
 	private int prev_right;
 	private int textLeft;
 	private int textTop;
-	private int textRight;
-	private int textBottom;
-	private int textLines;
+	private final int textLines;
 	private int textSizeH;
 	private int textEmptySpacing;
-	private Paint textPaint;
-	private Rect textRect;
+	private final Paint textPaint;
+	private final Rect textRect;
 	private int textHeight;
-	private Paint popUptextPaint;
+	private final Paint popUptextPaint;
 
 	public Display(GameActivity ga) {
 		super(ga);
@@ -135,7 +133,7 @@ public class Display extends Component {
 			int size2 = (((c.getWidth()-1) - 2*columnOffset)/(columns + 4 + host.getResources().getInteger(R.integer.padding_columns)));
 			if(size2 < squaresize) {
 				squaresize = size2;
-				rowOffset = (int)(((c.getHeight()-1) - squaresize*rows)/2);
+				rowOffset = ((c.getHeight()-1) - squaresize*rows)/2;
 			} else {
 				columnOffset = (c.getWidth() - 1 - squaresize*(host.getResources().getInteger(R.integer.padding_columns)+4+columns))/2;
 				if (columnOffset < 0) {
@@ -151,8 +149,8 @@ public class Display extends Component {
 			prev_right = prev_left + 4*squaresize;
 			textLeft = prev_left;
 			textTop = prev_bottom + 2*squaresize;
-			textRight = (c.getWidth()-1) - columnOffset;
-			textBottom = (c.getHeight()-1) - rowOffset - squaresize;
+			int textRight = (c.getWidth() - 1) - columnOffset;
+			int textBottom = (c.getHeight() - 1) - rowOffset - squaresize;
 			textSizeH = 1;
 
 			// Adaptive Text Size Setup
@@ -321,7 +319,7 @@ public class Display extends Component {
 		popUptextPaint.setColor(host.getResources().getColor(color.black));
 		popUptextPaint.setAlpha(host.game.getPopupAlpha());
 
-		int left = columnOffset + ((int)columns*squaresize/2) - ((int)popUptextPaint.measureText(text)/2); // middle minus half text width
+		int left = columnOffset + (columns *squaresize/2) - ((int)popUptextPaint.measureText(text)/2); // middle minus half text width
 		int top = c.getHeight()/2;
 
 		c.drawText(text, offset+left, top, popUptextPaint); // right

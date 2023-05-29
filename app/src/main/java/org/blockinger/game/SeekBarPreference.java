@@ -114,17 +114,15 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent){
-
-        RelativeLayout layout =  null;
+    protected View onCreateView(ViewGroup parent) {
+        super.onCreateView(parent);
+        RelativeLayout layout = null;
 
         try {
             LayoutInflater mInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            layout = (RelativeLayout)mInflater.inflate(R.layout.seek_bar_preference, parent, false);
-        }
-        catch(Exception e)
-        {
+            layout = (RelativeLayout) mInflater.inflate(R.layout.seek_bar_preference, parent, false);
+        } catch (Exception e) {
             Log.e(TAG, "Error creating seek bar preference", e);
         }
 

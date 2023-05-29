@@ -44,7 +44,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".GameActivity" >
+    tools:context=".activities.GameActivity" >
 
     <org.blockinger.game.BlockBoardView
         android:id="@+id/boardView"
@@ -68,7 +68,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2.4"
+                android:layout_weight="3.0"
                 android:gravity="center"
                 android:orientation="horizontal" >
 
@@ -106,18 +106,18 @@
                 android:id="@+id/View04"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.1" />
+                android:layout_weight="0.5" />
 
             <ImageButton
-                android:id="@+id/hardDropButton"
+                android:id="@+id/softDropButton"
                 style="@android:style/Widget.ImageWell"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:clickable="true"
-                android:contentDescription="Hard Drop Button"
+                android:contentDescription="soft Drop Button"
                 android:scaleType="centerInside"
-                android:src="@drawable/hard_drop_button_icon_noburn" />
+                android:src="@drawable/soft_drop_button_icon_noburn" />
         </LinearLayout>
 
         <View
@@ -167,7 +167,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2.4" >
+                android:layout_weight="3.0" >
 
                 <ImageButton
                     android:id="@+id/rotateLeftButton"
@@ -203,18 +203,18 @@
                 android:id="@+id/spacerl0"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="0.1" />
+                android:layout_weight="0.5" />
 
             <ImageButton
-                android:id="@+id/softDropButton"
+                android:id="@+id/hardDropButton"
                 style="@android:style/Widget.ImageWell"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:clickable="true"
-                android:contentDescription="soft Drop Button"
+                android:contentDescription="Hard Drop Button"
                 android:scaleType="centerInside"
-                android:src="@drawable/soft_drop_button_icon_noburn" />
+                android:src="@drawable/hard_drop_button_icon_noburn" />
 
         </LinearLayout>
 

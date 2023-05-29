@@ -83,8 +83,6 @@ public class MainActivity extends ListActivity {
 	private AlertDialog.Builder startLevelDialog;
 	private AlertDialog.Builder donateDialog;
 	private int startLevel;
-	private View dialogView;
-	private SeekBar leveldialogBar;
 	private TextView leveldialogtext;
 	private Sound sound;
 
@@ -120,37 +118,19 @@ public class MainActivity extends ListActivity {
 	    startLevelDialog = new AlertDialog.Builder(this);
 		startLevelDialog.setTitle(R.string.startLevelDialogTitle);
 		startLevelDialog.setCancelable(false);
-		startLevelDialog.setNegativeButton(R.string.startLevelDialogCancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		startLevelDialog.setPositiveButton(R.string.startLevelDialogStart, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				MainActivity.this.start();
-			}
-		});
+		startLevelDialog.setNegativeButton(R.string.startLevelDialogCancel, (dialog, which) -> dialog.dismiss());
+		startLevelDialog.setPositiveButton(R.string.startLevelDialogStart, (dialog, which) -> MainActivity.this.start());
 
 		/* Create Donate Dialog */
 	    donateDialog = new AlertDialog.Builder(this);
 	    donateDialog.setTitle(R.string.pref_donate_title);
 	    donateDialog.setMessage(R.string.pref_donate_summary);
-	    donateDialog.setNegativeButton(R.string.startLevelDialogCancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-	    donateDialog.setPositiveButton(R.string.donate_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String url = getResources().getString(R.string.donation_url);
-				Intent i = new Intent(Intent.ACTION_VIEW);
-				i.setData(Uri.parse(url));
-				startActivity(i);
-			}
+	    donateDialog.setNegativeButton(R.string.startLevelDialogCancel, (dialog, which) -> dialog.dismiss());
+	    donateDialog.setPositiveButton(R.string.donate_button, (dialog, which) -> {
+			String url = getResources().getString(R.string.donation_url);
+			Intent i = new Intent(Intent.ACTION_VIEW);
+			i.setData(Uri.parse(url));
+			startActivity(i);
 		});
 	}
 
@@ -213,9 +193,9 @@ public class MainActivity extends ListActivity {
 	}
 
     public void onClickStart(View view) {
-		dialogView = getLayoutInflater().inflate(R.layout.seek_bar_dialog, null);
-		leveldialogtext = ((TextView)dialogView.findViewById(R.id.leveldialogleveldisplay));
-		leveldialogBar = ((SeekBar)dialogView.findViewById(R.id.levelseekbar));
+		View dialogView = getLayoutInflater().inflate(R.layout.seek_bar_dialog, null);
+		leveldialogtext = ((TextView) dialogView.findViewById(R.id.leveldialogleveldisplay));
+		SeekBar leveldialogBar = ((SeekBar) dialogView.findViewById(R.id.levelseekbar));
 		leveldialogBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
@@ -280,13 +260,14 @@ public class MainActivity extends ListActivity {
 	    Cursor cursor = datasource.getCursor();
 	    adapter.changeCursor(cursor);
 
-	    if(!GameState.isFinished()) {
-	    	((Button)findViewById(R.id.resumeButton)).setEnabled(true);
-	    	((Button)findViewById(R.id.resumeButton)).setTextColor(getResources().getColor(R.color.square_error));
-	    } else {
-	    	((Button)findViewById(R.id.resumeButton)).setEnabled(false);
-	    	((Button)findViewById(R.id.resumeButton)).setTextColor(getResources().getColor(R.color.holo_grey));
-	    }
-    };
+		Button resumeButton = findViewById(R.id.resumeButton);
+		if (GameState.isFinished()) {
+			resumeButton.setEnabled(false);
+			resumeButton.setTextColor(getResources().getColor(R.color.holo_grey));
+		} else {
+			resumeButton.setEnabled(true);
+			resumeButton.setTextColor(getResources().getColor(R.color.square_error));
+		}
+	};
 
 }

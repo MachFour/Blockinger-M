@@ -27,6 +27,8 @@ android {
 dependencies {
     implementation 'androidx.fragment:fragment:1.5.7'
     implementation 'androidx.cursoradapter:cursoradapter:1.0.0'
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 
 }

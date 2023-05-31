@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <fraction name="controlsTopGuidelinePercent">0.17</fraction>
+    <fraction name="controlsUpperMidGuidelinePercent">0.60</fraction>
+    <fraction name="controlsLowerMidGuidelinePercent">0.64</fraction>
+    <fraction name="controlsBottomGuidelinePercent">0.88</fraction>
+    <fraction name="controlsLeftGuidelinePercent">0.24</fraction>
+    <fraction name="controlsRightGuidelinePercent">0.76</fraction>
+
+    <fraction name="boardTopGuidelinePercent">0</fraction>
+    <fraction name="boardBottomGuidelinePercent">1</fraction>
+    <fraction name="boardLeftGuidelinePercent">0.24</fraction>
+    <fraction name="boardRightGuidelinePercent">0.76</fraction>
+</resources>

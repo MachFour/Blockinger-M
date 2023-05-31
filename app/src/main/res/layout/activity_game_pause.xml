@@ -3,7 +3,7 @@
 <!--
     Copyright 2013 Simon Willeke
     contact: hamstercount@hotmail.com
- -->
+-->
 
 <!--
     This file is part of Blockinger.
@@ -35,51 +35,26 @@
 
     Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
     Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
-  -->
+-->
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.GameActivity" >
+    >
 
-    <include layout="@layout/activity_game_common" />
-    <include layout="@layout/activity_game_pause" />
-
-    <ImageButton
-        android:id="@+id/softDropButton"
+    <Button
+        android:id="@+id/pausebutton_1"
         style="@android:style/Widget.ImageWell"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="48dp"
         android:layout_margin="4dp"
-        android:clickable="true"
-        android:contentDescription="soft Drop Button"
-        android:scaleType="centerInside"
-        android:src="@drawable/soft_drop_button_icon_noburn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/controlsLeftGuideline"
-        app:layout_constraintTop_toBottomOf="@id/controlsLowerMidGuideline"
-        app:layout_constraintBottom_toTopOf="@id/controlsBottomGuideline"
+        android:text="@string/pausebutton"
+        android:textColor="@color/square_error"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColorHint="@color/holo_grey"
+        app:layout_constraintStart_toEndOf="@id/controlsLeftGuideline"
+        app:layout_constraintEnd_toStartOf="@id/controlsRightGuideline"
+        app:layout_constraintTop_toBottomOf="@id/controlsTopGuideline"
         />
 
-    <ImageButton
-        android:id="@+id/hardDropButton"
-        style="@android:style/Widget.ImageWell"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="4dp"
-        android:clickable="true"
-        android:contentDescription="Hard Drop Button"
-        android:scaleType="centerInside"
-        android:src="@drawable/hard_drop_button_icon_noburn"
-        app:layout_constraintTop_toBottomOf="@id/controlsLowerMidGuideline"
-        app:layout_constraintBottom_toTopOf="@id/controlsBottomGuideline"
-        app:layout_constraintStart_toEndOf="@id/controlsRightGuideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

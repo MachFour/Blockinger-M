@@ -37,33 +37,60 @@
     Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
 -->
 
-<!-- copy of land/activity_game.xml with soft and hard drop buttons swapped -->
-
-<androidx.constraintlayout.widget.ConstraintLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.GameActivity" >
+    >
 
     <org.blockinger.game.BlockBoardView
         android:id="@+id/boardView"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@null"
-        app:layout_constraintStart_toEndOf="@id/controlsLeftGuideline"
-        app:layout_constraintEnd_toStartOf="@id/controlsRightGuideline"
+        app:layout_constraintTop_toBottomOf="@id/boardTopGuideline"
+        app:layout_constraintBottom_toTopOf="@id/boardBottomGuideline"
+        app:layout_constraintStart_toEndOf="@id/boardLeftGuideline"
+        app:layout_constraintEnd_toStartOf="@id/boardRightGuideline"
         />
 
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/boardTopGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@fraction/boardTopGuidelinePercent"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/boardBottomGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@fraction/boardBottomGuidelinePercent"
+        />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/boardLeftGuideline"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@fraction/boardLeftGuidelinePercent"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/boardRightGuideline"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@fraction/boardRightGuidelinePercent"
+        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/controlsTopGuideline"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15"
+        app:layout_constraintGuide_percent="@fraction/controlsTopGuidelinePercent"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -71,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.68"
+        app:layout_constraintGuide_percent="@fraction/controlsUpperMidGuidelinePercent"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -79,7 +106,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.72"
+        app:layout_constraintGuide_percent="@fraction/controlsLowerMidGuidelinePercent"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -87,14 +114,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95"
+        app:layout_constraintGuide_percent="@fraction/controlsBottomGuidelinePercent"
         />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/controlsLeftGuideline"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.24"
+        app:layout_constraintGuide_percent="@fraction/controlsLeftGuidelinePercent"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -102,7 +129,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.76"
+        app:layout_constraintGuide_percent="@fraction/controlsRightGuidelinePercent"
         />
 
     <ImageButton
@@ -173,54 +200,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-
-    <ImageButton
-        android:id="@+id/softDropButton"
-        style="@android:style/Widget.ImageWell"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="4dp"
-        android:clickable="true"
-        android:contentDescription="soft Drop Button"
-        android:scaleType="centerInside"
-        android:src="@drawable/soft_drop_button_icon_noburn"
-        app:layout_constraintStart_toEndOf="@id/controlsRightGuideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/controlsLowerMidGuideline"
-        app:layout_constraintBottom_toTopOf="@id/controlsBottomGuideline"
-        />
-
-    <ImageButton
-        android:id="@+id/hardDropButton"
-        style="@android:style/Widget.ImageWell"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="4dp"
-        android:clickable="true"
-        android:contentDescription="Hard Drop Button"
-        android:scaleType="centerInside"
-        android:src="@drawable/hard_drop_button_icon_noburn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/controlsLeftGuideline"
-        app:layout_constraintTop_toBottomOf="@id/controlsLowerMidGuideline"
-        app:layout_constraintBottom_toTopOf="@id/controlsBottomGuideline"
-        />
-
-
-    <Button
-        android:id="@+id/pausebutton_1"
-        style="@android:style/Widget.ImageWell"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_margin="4dp"
-        android:text="@string/pausebutton"
-        android:textColor="@color/square_error"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColorHint="@color/holo_grey"
-        app:layout_constraintStart_toEndOf="@id/controlsRightGuideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/controlsTopGuideline"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

@@ -35,10 +35,23 @@
     Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
   -->
 
- <resources>
+<resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <fraction name="controlsTopGuidelinePercent">0.6</fraction>
+    <fraction name="controlsUpperMidGuidelinePercent">0.83</fraction>
+    <fraction name="controlsLowerMidGuidelinePercent">0.85</fraction>
+    <fraction name="controlsBottomGuidelinePercent">0.96</fraction>
+    <fraction name="controlsLeftGuidelinePercent">0.38</fraction>
+    <fraction name="controlsRightGuidelinePercent">0.62</fraction>
+
+
+    <fraction name="boardTopGuidelinePercent">0.0</fraction>
+    <fraction name="boardBottomGuidelinePercent">0.6</fraction>
+    <fraction name="boardLeftGuidelinePercent">0.0</fraction>
+    <fraction name="boardRightGuidelinePercent">1</fraction>
 
 </resources>

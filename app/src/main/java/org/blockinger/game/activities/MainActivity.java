@@ -105,7 +105,7 @@ public class MainActivity extends ListActivity {
 	    // Use the SimpleCursorAdapter to show the
 	    // elements in a ListView
 	    adapter = new SimpleCursorAdapter(
-	    	(Context)this,
+	    	this,
 	        R.layout.blockinger_list_item,
 	        mc,
 	        new String[] {HighscoreOpenHelper.COLUMN_SCORE, HighscoreOpenHelper.COLUMN_PLAYERNAME},
@@ -194,8 +194,8 @@ public class MainActivity extends ListActivity {
 
     public void onClickStart(View view) {
 		View dialogView = getLayoutInflater().inflate(R.layout.seek_bar_dialog, null);
-		leveldialogtext = ((TextView) dialogView.findViewById(R.id.leveldialogleveldisplay));
-		SeekBar leveldialogBar = ((SeekBar) dialogView.findViewById(R.id.levelseekbar));
+		leveldialogtext = dialogView.findViewById(R.id.leveldialogleveldisplay);
+		SeekBar leveldialogBar = dialogView.findViewById(R.id.levelseekbar);
 		leveldialogBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
@@ -233,25 +233,25 @@ public class MainActivity extends ListActivity {
     	super.onPause();
     	sound.pause();
     	sound.setInactive(true);
-    };
+    }
 
-    @Override
+	@Override
     protected void onStop() {
     	super.onStop();
     	sound.pause();
     	sound.setInactive(true);
     	datasource.close();
-    };
+    }
 
-    @Override
+	@Override
     protected void onDestroy() {
     	super.onDestroy();
     	sound.release();
     	sound = null;
     	datasource.close();
-    };
+    }
 
-    @Override
+	@Override
     protected void onResume() {
     	super.onResume();
     	sound.setInactive(false);
@@ -268,6 +268,6 @@ public class MainActivity extends ListActivity {
 			resumeButton.setEnabled(true);
 			resumeButton.setTextColor(getResources().getColor(R.color.square_error));
 		}
-	};
+	}
 
 }

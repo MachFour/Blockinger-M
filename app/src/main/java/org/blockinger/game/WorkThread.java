@@ -45,28 +45,27 @@ import android.view.SurfaceHolder;
 
 public class WorkThread extends Thread {
 
-    /**
-	 *
-	 */
-	private SurfaceHolder surfaceHolder;
+	private final SurfaceHolder surfaceHolder;
     private boolean runFlag = false;
     boolean firstTime = true;
 	public long lastFrameDuration = 0;
 	private long lastFrameStartingTime = 0;
 	int fpslimit;
 	long lastDelay;
-	private GameActivity host;
+	private final GameActivity host;
 
     public WorkThread(GameActivity ga, SurfaceHolder sh) {
     	host = ga;
-		this.surfaceHolder = sh;
+		surfaceHolder = sh;
+
         try {
         	fpslimit = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(host).getString("pref_fpslimittext", "35"));
         } catch(NumberFormatException e) {
         	fpslimit = 25;
         }
-        if(fpslimit < 5)
-        	fpslimit = 5;
+        if (fpslimit < 5) {
+			fpslimit = 5;
+		}
 
 		lastDelay = 100;
     }
@@ -82,7 +81,7 @@ public class WorkThread extends Thread {
 
 		long fpsUpdateTime = tempTime + 200;
 		int frames = 0;
-		int frameCounter[] = {0, 0, 0, 0, 0};
+		int[] frameCounter = {0, 0, 0, 0, 0};
 		int i = 0;
 
         while (this.runFlag) {
@@ -109,8 +108,7 @@ public class WorkThread extends Thread {
 		            else
 		            	lastDelay+= 25;
 
-		            if(lastDelay == 0) {} // no Sleep
-		            else {
+		            if(lastDelay != 0) {
 			            try {// do sleep!
 							Thread.sleep(lastDelay);
 						} catch (InterruptedException e) {
@@ -129,22 +127,21 @@ public class WorkThread extends Thread {
 	            frameCounter[i]++;
 	            /* END OF FPS CONTROL*/
 
-	            if(host.game.cycle(tempTime))
-	            	host.controls.cycle(tempTime);
+	            if (host.game.cycle(tempTime)) {
+					host.controls.cycle(tempTime);
+				}
+
 	            host.game.getBoard().cycle(tempTime);
 
 	            c = null;
 	            try {
-
 	                c = this.surfaceHolder.lockCanvas(null);
 	                synchronized (this.surfaceHolder) {
 	                    host.display.doDraw(c, frames);
 	                }
 	            } finally {
-
 	                if (c != null) {
 	                    this.surfaceHolder.unlockCanvasAndPost(c);
-
 	                }
 	            }
         }

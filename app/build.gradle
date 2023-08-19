@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "org.blockinger.game"
-    compileSdkVersion 33
+    compileSdk 33
     buildToolsVersion "33.0.2"
 
     defaultConfig {

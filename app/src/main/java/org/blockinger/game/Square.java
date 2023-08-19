@@ -120,10 +120,7 @@ public class Square {
 	}
 
 	public boolean isEmpty() {
-		if(type == type_empty)
-			return true;
-		else
-			return false;
+		return type == type_empty;
 	}
 
 	public void draw(int x, int y, int squareSize, Canvas c, boolean isPhantom) { // top left corner of square

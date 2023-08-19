@@ -62,7 +62,7 @@ public abstract class Piece3x3 extends Piece {
 		int leftOffset = 0;
 		int rightOffset = 0;
 		int bottomOffset = 0;
-		Square backup[][] = pattern;
+		Square[][] backup = pattern;
 		// [0][0] ... [0][2]
 		//  ....       ....
 		// [2][0] ... [2][2]
@@ -153,7 +153,7 @@ public abstract class Piece3x3 extends Piece {
 		int leftOffset = 0;
 		int rightOffset = 0;
 		int bottomOffset = 0;
-		Square backup[][] = pattern;
+		Square[][] backup = pattern;
 		// [0][0] ... [0][2]
 		//  ....       ....
 		// [2][0] ... [2][2]

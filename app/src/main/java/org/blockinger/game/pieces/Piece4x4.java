@@ -62,7 +62,7 @@ public abstract class Piece4x4 extends Piece {
 		int leftOffset = 0;
 		int rightOffset = 0;
 		int bottomOffset = 0;
-		Square backup[][] = pattern;
+		Square[][] backup = pattern;
 		// [0][0] ... [0][3]
 		//  ....       ....
 		// [3][0] ... [3][3]
@@ -161,7 +161,7 @@ public abstract class Piece4x4 extends Piece {
 		int leftOffset = 0;
 		int rightOffset = 0;
 		int bottomOffset = 0;
-		Square backup[][] = pattern;
+		Square[][] backup = pattern;
 		// [0][0] ... [0][3]
 		//  ....       ....
 		// [3][0] ... [3][3]

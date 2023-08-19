@@ -60,8 +60,8 @@ public abstract class Piece {
 	protected int y; // pattern position
 	protected int dim;    // maximum dimensions for square matrix, so all rotations fit inside!
 	protected int squareSize;
-	protected Square pattern[][]; 	// square matrix
-	protected Square rotated[][]; 	// square matrix
+	protected Square[][] pattern; 	// square matrix
+	protected Square[][] rotated; 	// square matrix
 	private Square emptySquare;
 	private Canvas cv;
 	private Bitmap bm;
@@ -219,9 +219,9 @@ public abstract class Piece {
 		cv = new Canvas(bm);
 		for(int i = 0; i < dim; i++) {
 			for(int j = 0; j < dim; j++) {
-				if(pattern[i][j] == null) {} else
-					if(!pattern[i][j].isEmpty())
-						pattern[i][j].draw(j*squareSize, i*squareSize, squareSize, cv, false);
+				if (pattern[i][j] != null && !pattern[i][j].isEmpty()) {
+					pattern[i][j].draw(j * squareSize, i * squareSize, squareSize, cv, false);
+				}
 			}
 		}
 
@@ -229,9 +229,9 @@ public abstract class Piece {
 		cvPhantom = new Canvas(bmPhantom);
 		for(int i = 0; i < dim; i++) {
 			for(int j = 0; j < dim; j++) {
-				if(pattern[i][j] == null) {} else
-					if(!pattern[i][j].isEmpty())
-						pattern[i][j].draw(j*squareSize, i*squareSize, squareSize, cvPhantom, true);
+				if (pattern[i][j] != null && !pattern[i][j].isEmpty()) {
+					pattern[i][j].draw(j * squareSize, i * squareSize, squareSize, cvPhantom, true);
+				}
 			}
 		}
 	}

@@ -45,7 +45,7 @@ public class PieceGenerator {
 	public static final int STRAT_7BAG = 1;
 
 	int strategy;
-	int bag[];
+	int[] bag;
 	int bagPointer;
 	private Random rndgen;
 
@@ -69,21 +69,20 @@ public class PieceGenerator {
 	}
 
 	public int next() {
-		if(strategy== STRAT_RANDOM)
+		if (strategy == STRAT_RANDOM ) {
 			return rndgen.nextInt(7);
-		else {
-			if(bagPointer < 7) {
+		} else {
+			if (bagPointer < 7) {
 				bagPointer++;
-				return bag[bagPointer - 1];
 			} else {
 				// Randomize Bag
-				for(int i = 0; i < 6; i++) {
+				for (int i = 0; i < 6; i++) {
 					int c = rndgen.nextInt(7-i);
 					int t = bag[i]; bag[i] = bag[i+c]; bag[i+c] = t;	/* swap */
 				}
 				bagPointer = 1;
-				return bag[bagPointer - 1];
 			}
+			return bag[bagPointer - 1];
 		}
 	}
 }

@@ -138,10 +138,7 @@ public class Row {
 	}
 
 	public boolean isFull() {
-		if(fillStatus >= width)
-			return true;
-		else
-			return false;
+		return fillStatus >= width;
 	}
 
 	public void cycle(long time, Board board) {

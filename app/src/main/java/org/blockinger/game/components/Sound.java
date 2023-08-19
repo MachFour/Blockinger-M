@@ -165,10 +165,7 @@ public class Sound implements OnAudioFocusChangeListener {
 		                AudioManager.STREAM_MUSIC,
 		                // Request permanent focus.
 		                AudioManager.AUDIOFOCUS_GAIN);
-			if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-				noFocus = false;
-			} else
-				noFocus = true;
+			noFocus = result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
 		}
 	}
 
@@ -230,11 +227,10 @@ public class Sound implements OnAudioFocusChangeListener {
 		if(isInactive)
 			return;
 
-		if(isMusicReady) {
-			/* NOP */
-		} else {
+		if(!isMusicReady) {
 			loadMusic(type,startTime);
 		}
+
 		if(isMusicReady) {
 			if(audioCEO.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
 				return;

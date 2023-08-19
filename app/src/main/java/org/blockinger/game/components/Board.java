@@ -47,8 +47,8 @@ import android.graphics.Canvas;
 
 public class Board extends Component {
 
-	private int height;
-	private int width;
+	private final int height;
+	private final int width;
 	private Row topRow; // index 0
 	private Row currentRow;
 	private int currentIndex;
@@ -56,7 +56,6 @@ public class Board extends Component {
 	//private Context context;
 	private boolean valid;
 	private Bitmap blockMap;
-	private Canvas blockVas;
 
 	public Board(GameActivity ga) {
 		super(ga);
@@ -69,7 +68,7 @@ public class Board extends Component {
 		currentIndex = 0;
 		tempRow = topRow;
 		currentRow = topRow;
-		for(int i = 1; i < height; i++) {
+		for (int i = 1; i < height; i++) {
 			currentRow = new Row(width,host);
 			currentIndex = i;
 			currentRow.setAbove(tempRow);
@@ -107,12 +106,12 @@ public class Board extends Component {
 			return;
 		}
 
-		blockVas = new Canvas(blockMap);
+		Canvas blockVas = new Canvas(blockMap);
 		valid = true;
 		tempRow = topRow;
 		for(int i = 0; i < height; i++) {
 			if(tempRow != null) {
-				tempRow.draw(0,0+i*squareSize,squareSize,blockVas);
+				tempRow.draw(0,0+i*squareSize,squareSize, blockVas);
 				tempRow = tempRow.below();
 			}
 		}

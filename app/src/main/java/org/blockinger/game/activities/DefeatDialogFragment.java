@@ -80,13 +80,7 @@ public class DefeatDialogFragment extends DialogFragment {
 				"\n    " + apmString + "\n\n" +
 				getResources().getString(R.string.hint)
 				);
-		builder.setNeutralButton(R.string.defeatDialogReturn, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				((GameActivity)getActivity()).putScore(score);
-			}
-		});
+		builder.setNeutralButton(R.string.defeatDialogReturn, (dialog, which) -> ((GameActivity)getActivity()).putScore(score));
 		return builder.create();
 	}
 }

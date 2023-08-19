@@ -39,16 +39,12 @@ package org.blockinger.game.activities;
 
 import org.blockinger.game.R;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.view.MenuItem;
 
 public class AboutActivity extends PreferenceActivity {

@@ -53,15 +53,13 @@ public class Square {
 	public static final int type_magenta = 6;
 	public static final int type_cyan = 7;
 
-	private int type;
-	private Paint paint;
+	private final int type;
+	private final Paint paint;
 	private Bitmap bm;
 	private Bitmap phantomBM;
-	private Canvas canv;
-	private Canvas phantomCanv;
 	//private Context context;
 	private int squaresize;
-	private int phantomAlpha;
+	private final int phantomAlpha;
 
 	public Square(int type, Context c) {
 		this.type = type;
@@ -105,8 +103,8 @@ public class Square {
 		squaresize = ss;
 		bm = Bitmap.createBitmap(ss, ss, Bitmap.Config.ARGB_8888);
 		phantomBM = Bitmap.createBitmap(ss, ss, Bitmap.Config.ARGB_8888);
-		canv = new Canvas(bm);
-		phantomCanv = new Canvas(phantomBM);
+		Canvas canv = new Canvas(bm);
+		Canvas phantomCanv = new Canvas(phantomBM);
 
 		paint.setAlpha(255);
 		canv.drawRect(0, 0, squaresize, squaresize, paint);

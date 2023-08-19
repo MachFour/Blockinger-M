@@ -62,9 +62,9 @@ public class Sound implements OnAudioFocusChangeListener {
 	private MediaPlayer musicPlayer;
 	private boolean noFocus;
 	private boolean isMusicReady;
-	private BroadcastReceiver noisyAudioStreamReceiver;
-	private BroadcastReceiver ringerModeReceiver;
-	private BroadcastReceiver headsetPlugReceiver;
+	private final BroadcastReceiver noisyAudioStreamReceiver;
+	private final BroadcastReceiver ringerModeReceiver;
+	private final BroadcastReceiver headsetPlugReceiver;
 	private SoundPool soundPool;
 	private int songtime;
 	private int musicType;

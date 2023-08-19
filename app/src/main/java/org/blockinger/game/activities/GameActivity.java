@@ -38,7 +38,6 @@ b * Copyright 2013 Simon Willeke
 package org.blockinger.game.activities;
 
 import org.blockinger.game.BlockBoardView;
-import org.blockinger.game.BuildConfig;
 import org.blockinger.game.R;
 import org.blockinger.game.WorkThread;
 import org.blockinger.game.components.Controls;
@@ -50,12 +49,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.ImageButton;
-import android.widget.Button;
-import android.view.View.OnTouchListener;
 
 import androidx.fragment.app.FragmentActivity;
 

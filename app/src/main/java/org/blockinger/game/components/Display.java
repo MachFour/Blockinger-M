@@ -183,20 +183,23 @@ public class Display extends Component {
 
 		drawActive(columnOffset, rowOffset, squaresize, c);
 
-		if(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_phantom", false))
+		if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_phantom", false)) {
 			drawPhantom(columnOffset, rowOffset, squaresize, c);
+		}
 
 	    drawGrid(columnOffset, rowOffset, gridColumnBorder, gridRowBorder, c);
 
-	    if(host.controls.isBoardTouched())
-	    	drawTouchIndicator();
+	    if (host.controls.isBoardTouched()) {
+			drawTouchIndicator();
+		}
 
 	    drawPreview(prev_left, prev_top, prev_right, prev_bottom, c);
 
 	    drawTextFillBox(c, fps);
 
-		if(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_popup", true))
+		if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_popup", true)) {
 			drawPopupText(c);
+		}
 	}
 
 	private void drawTouchIndicator() {

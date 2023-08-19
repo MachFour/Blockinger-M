@@ -61,10 +61,8 @@ public class AdvancedSettingsActivity extends PreferenceActivity implements OnSh
 
 		addPreferencesFromResource(R.xml.advanced_preferences);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	        ActionBar actionBar = getActionBar();
-	        actionBar.setDisplayHomeAsUpEnabled(true);
-	    }
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 

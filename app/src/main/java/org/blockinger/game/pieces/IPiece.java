@@ -43,7 +43,7 @@ import android.content.Context;
 
 public class IPiece extends Piece4x4 {
 
-	private Square iSquare;
+	private final Square iSquare;
 
 	public IPiece(Context c) {
 		super(c);

@@ -43,7 +43,7 @@ import android.content.Context;
 
 public class ZPiece extends Piece3x3 {
 
-	private Square zSquare;
+	private final Square zSquare;
 
 	public ZPiece(Context c) {
 		super(c);

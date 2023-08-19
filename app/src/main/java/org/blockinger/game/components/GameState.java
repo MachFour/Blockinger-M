@@ -62,57 +62,53 @@ public class GameState extends Component {
 
 	// References
 	private PieceGenerator rng;
-	public Board board;
-	private SimpleDateFormat formatter;
+	public final Board board;
 
 	// Game State
 	private String playerName;
 	private int activeIndex, previewIndex;
-	private Piece[] activePieces;
-	private Piece[] previewPieces;
+	private final Piece[] activePieces;
+	private final Piece[] previewPieces;
 	private boolean scheduleSpawn;
 	private long spawnTime;
-	//private boolean paused;
-	//private boolean restartMe;
 	private int stateOfTheGame;
 	private long score;
 	//private long consecutiveBonusScore;
 	private int clearedLines;
 	private int level;
-	private int maxLevel;
+	private final int maxLevel;
 	private long gameTime;     // += (systemtime - currenttime) at start of cycle
 	private long currentTime;  // = systemtime at start of cycle
 	private long nextDropTime;
 	private long nextPlayerDropTime;
 	private long nextPlayerMoveTime;
-	private int[] dropIntervals; // =(1/gamespeed)
+	private final int[] dropIntervals; // =(1/gamespeed)
 	private long playerDropInterval;
 	private long playerMoveInterval;
-	private int singleLineScore;
-	private int doubleLineScore;
-	private int trippleLineScore;
-	private int multiTetrisScore;
+	private final int singleLineScore;
+	private final int doubleLineScore;
+	private final int trippleLineScore;
+	private final int multiTetrisScore;
 	private boolean multitetris;
-	private int quadLineScore;
-	private int hardDropBonus;
-	private int softDropBonus;
-	private int spawn_delay;
-	private int piece_start_x;
+	private final int quadLineScore;
+	private final int hardDropBonus;
+	private final int softDropBonus;
+	private final int spawn_delay;
+	private final int piece_start_x;
 	private long actions;
 	private int songtime;
 
 	private long popupTime;
 	private String popupString;
-	private int popupAttack;
-	private int popupSustain;
-	private int popupDecay;
+	private final int popupAttack;
+	private final int popupSustain;
+	private final int popupDecay;
 	private int softDropDistance;
 
 	private GameState(GameActivity ga) {
 		super(ga);
 		actions = 0;
 		board = new Board(host);
-		formatter = new SimpleDateFormat("HH:mm:ss",Locale.US);
 
 		dropIntervals = host.getResources().getIntArray(R.array.intervals);
 		singleLineScore = host.getResources().getInteger(R.integer.singleLineScore);
@@ -175,8 +171,6 @@ public class GameState extends Component {
 		previewIndex = rng.next();
 		activePieces[activeIndex].setActive(true);
 
-		//paused = true;
-		//restartMe = false;
 		stateOfTheGame = state_startable;
 		scheduleSpawn = false;
 		spawnTime = 0;
@@ -262,33 +256,33 @@ public class GameState extends Component {
 					popupTime = gameTime - (popupAttack + popupSustain);
 				break;
 		}
-		//long tempBonus = consecutiveBonusScore;
-		//consecutiveBonusScore += addScore;
 		if(cleared > 0) {
 			/* HardDrop/SoftDrop Boni: we comply to Tetrisfriends rules now */
-			if(playerHardDrop) {
-				addScore += hardDropDistance*hardDropBonus;
+			if (playerHardDrop) {
+				addScore += (long) hardDropDistance * hardDropBonus;
 				//addScore = (int)((float)addScore* (1.0f + ((float)hardDropDistance/(float)hardDropBonusFactor)));
 			} else {
-				addScore += softDropDistance*softDropBonus;
+				addScore += (long) softDropDistance * softDropBonus;
 			}
 		}
 		score += addScore;// + tempBonus;
-		if(addScore != 0)
+		if (addScore != 0) {
 			popupString = "+"+addScore;
-		// host.saveScore(score); is not supported by ScoreDataSource
+		}
 	}
 
 	public void pieceTransition(boolean eventVibrationEnabled) {
-		if(host == null)
+		if (host == null) {
 			return;
+		}
 
 		scheduleSpawn = true;
-		//Delay Piece Transition only while vibration is playing
-		if(eventVibrationEnabled)
-			spawnTime = gameTime + spawn_delay;
-		else
-			spawnTime = gameTime;
+
+		// Delay Piece Transition only while vibration is playing
+		spawnTime = gameTime;
+		if (eventVibrationEnabled) {
+			spawnTime += spawn_delay;
+		}
 
 		activePieces[activeIndex].reset(host);
 		activeIndex  = previewIndex;
@@ -336,16 +330,17 @@ public class GameState extends Component {
 	 * @return true if controls is allowed to cycle()
 	 */
 	public boolean cycle(long tempTime) {
-		if(stateOfTheGame != state_running)
+		if (stateOfTheGame != state_running)
 			return false;
 
 		gameTime += (tempTime - currentTime);
 		currentTime = tempTime;
 
 		// Instant Placement
-		if(scheduleSpawn) {
-			if(gameTime >= spawnTime)
+		if (scheduleSpawn) {
+			if (gameTime >= spawnTime) {
 				finishTransition();
+			}
 			return false;
 		}
 		return true;
@@ -360,9 +355,7 @@ public class GameState extends Component {
 	}
 
 	public String getAPMString() {
-		if(host == null)
-			return "";
-		return String.valueOf((int)((float)actions*(60000.0f / gameTime)));
+		return (host == null) ? "" : String.valueOf((int)((float)actions*(60000.0f / gameTime)));
 	}
 
 	@Override

@@ -43,7 +43,7 @@ import android.content.Context;
 
 public class JPiece extends Piece3x3 {
 
-	private Square jSquare;
+	private final Square jSquare;
 
 	public JPiece(Context c) {
 		super(c);

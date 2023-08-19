@@ -58,14 +58,12 @@ public abstract class Piece {
 	protected boolean active;
 	protected int x; // pattern position
 	protected int y; // pattern position
-	protected int dim;    // maximum dimensions for square matrix, so all rotations fit inside!
+	protected final int dim;    // maximum dimensions for square matrix, so all rotations fit inside!
 	protected int squareSize;
 	protected Square[][] pattern; 	// square matrix
 	protected Square[][] rotated; 	// square matrix
-	private Square emptySquare;
-	private Canvas cv;
+	private final Square emptySquare;
 	private Bitmap bm;
-	private Canvas cvPhantom;
 	private Bitmap bmPhantom;
 	private boolean isPhantom;
 
@@ -216,7 +214,7 @@ public abstract class Piece {
 	protected void reDraw() {
 
 		bm = Bitmap.createBitmap(squareSize*dim, squareSize*dim, Bitmap.Config.ARGB_8888);
-		cv = new Canvas(bm);
+		Canvas cv = new Canvas(bm);
 		for(int i = 0; i < dim; i++) {
 			for(int j = 0; j < dim; j++) {
 				if (pattern[i][j] != null && !pattern[i][j].isEmpty()) {
@@ -226,7 +224,7 @@ public abstract class Piece {
 		}
 
 		bmPhantom = Bitmap.createBitmap(squareSize*dim, squareSize*dim, Bitmap.Config.ARGB_8888);
-		cvPhantom = new Canvas(bmPhantom);
+		Canvas cvPhantom = new Canvas(bmPhantom);
 		for(int i = 0; i < dim; i++) {
 			for(int j = 0; j < dim; j++) {
 				if (pattern[i][j] != null && !pattern[i][j].isEmpty()) {

@@ -47,8 +47,8 @@ public class ScoreDataSource {
 
 	// Database fields
 	  private SQLiteDatabase database;
-	  private HighscoreOpenHelper dbHelper;
-	  private String[] allColumns = { HighscoreOpenHelper.COLUMN_ID,
+	  private final HighscoreOpenHelper dbHelper;
+	  private final String[] allColumns = { HighscoreOpenHelper.COLUMN_ID,
 			  HighscoreOpenHelper.COLUMN_SCORE,
 			  HighscoreOpenHelper.COLUMN_PLAYERNAME};
 

@@ -44,10 +44,10 @@ public class PieceGenerator {
 	public static final int STRAT_RANDOM = 0;
 	public static final int STRAT_7BAG = 1;
 
-	int strategy;
-	int[] bag;
+	final int strategy;
+	final int[] bag;
 	int bagPointer;
-	private Random rndgen;
+	private final Random rndgen;
 
 	public PieceGenerator(int strat) {
 		bag = new int[7];

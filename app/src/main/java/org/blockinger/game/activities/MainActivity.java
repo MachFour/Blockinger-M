@@ -48,8 +48,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.view.Menu;
@@ -60,8 +58,6 @@ import android.widget.Button;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 public class MainActivity extends ListActivity {

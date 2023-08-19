@@ -63,10 +63,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 		addPreferencesFromResource(R.xml.simple_preferences);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	        ActionBar actionBar = getActionBar();
-	        actionBar.setDisplayHomeAsUpEnabled(true);
-	    }
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 

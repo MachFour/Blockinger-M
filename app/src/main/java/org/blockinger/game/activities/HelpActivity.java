@@ -37,99 +37,71 @@ public class HelpActivity extends PreferenceActivity {
 
 		addPreferencesFromResource(R.xml.help_menu);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	        ActionBar actionBar = getActionBar();
-	        actionBar.setDisplayHomeAsUpEnabled(true);
-	    }
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		/* Initialize Dialog */
 	    dialog = new AlertDialog.Builder(this);
 	    dialog.setCancelable(true);
-	    dialog.setNeutralButton(R.string.action_backtomain, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+	    dialog.setNeutralButton(R.string.action_backtomain, (dialog, which) -> dialog.dismiss());
 
 	    /* Register on Click Callbacks */
 		Preference pref = findPreference("pref_help_scoring");
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-			    dialog.setTitle(R.string.pref_help_scoring_title);
-				dialog.setMessage(R.string.pref_help_scoring_message);
-				dialog.show();
-				return true;
-			}
+        pref.setOnPreferenceClickListener(preference -> {
+			dialog.setTitle(R.string.pref_help_scoring_title);
+			dialog.setMessage(R.string.pref_help_scoring_message);
+			dialog.show();
+			return true;
 		});
 
 		pref = findPreference("pref_help_levels");
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-			    dialog.setTitle(R.string.pref_help_levels_title);
-				dialog.setMessage(R.string.pref_help_levels_message);
-				dialog.show();
-				return true;
-			}
+        pref.setOnPreferenceClickListener(preference -> {
+			dialog.setTitle(R.string.pref_help_levels_title);
+			dialog.setMessage(R.string.pref_help_levels_message);
+			dialog.show();
+			return true;
 		});
 
 		pref = findPreference("pref_help_vibration");
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-			    dialog.setTitle(R.string.pref_help_vibration_title);
-				dialog.setMessage(R.string.pref_help_vibration_message);
-				dialog.show();
-				return true;
-			}
+        pref.setOnPreferenceClickListener(preference -> {
+			dialog.setTitle(R.string.pref_help_vibration_title);
+			dialog.setMessage(R.string.pref_help_vibration_message);
+			dialog.show();
+			return true;
 		});
 
 		pref = findPreference("pref_help_apm");
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-			    dialog.setTitle(R.string.pref_help_apm_title);
-				dialog.setMessage(R.string.pref_help_apm_message);
-				dialog.show();
-				return true;
-			}
+        pref.setOnPreferenceClickListener(preference -> {
+			dialog.setTitle(R.string.pref_help_apm_title);
+			dialog.setMessage(R.string.pref_help_apm_message);
+			dialog.show();
+			return true;
 		});
 
 		pref = findPreference("pref_help_fps");
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-			    dialog.setTitle(R.string.pref_help_fps_title);
-				dialog.setMessage(R.string.pref_help_fps_message);
-				dialog.show();
-				return true;
-			}
+        pref.setOnPreferenceClickListener(preference -> {
+			dialog.setTitle(R.string.pref_help_fps_title);
+			dialog.setMessage(R.string.pref_help_fps_message);
+			dialog.show();
+			return true;
 		});
 
 		pref = findPreference("pref_help_randomizer");
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-			    dialog.setTitle(R.string.pref_help_randomizer_title);
-				dialog.setMessage(R.string.pref_help_randomizer_message);
-				dialog.show();
-				return true;
-			}
+        pref.setOnPreferenceClickListener(preference -> {
+			dialog.setTitle(R.string.pref_help_randomizer_title);
+			dialog.setMessage(R.string.pref_help_randomizer_message);
+			dialog.show();
+			return true;
 		});
 
 		pref = findPreference("pref_help_resumability");
-        pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-			    dialog.setTitle(R.string.pref_help_resumability_title);
-				dialog.setMessage(R.string.pref_help_resumability_message);
-				dialog.show();
-				return true;
-			}
+        pref.setOnPreferenceClickListener(preference -> {
+			dialog.setTitle(R.string.pref_help_resumability_title);
+			dialog.setMessage(R.string.pref_help_resumability_message);
+			dialog.show();
+			return true;
 		});
 
 	}

@@ -61,10 +61,10 @@ public class Animator {
 	private long nextFlash;
 
 	// Data
-	private Row row;
+	private final Row row;
 	private Bitmap bitmapRow;
-	private int flashCount;
-	private int rawFlashInterval;
+	private final int flashCount;
+	private final int rawFlashInterval;
 
 	// Constructor
 	public Animator(Context c, Row r) {

@@ -53,65 +53,67 @@ import android.view.MenuItem;
 
 public class AdvancedSettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-	@SuppressLint("NewApi")
-	@SuppressWarnings("deprecation")
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
+    @SuppressLint("NewApi")
+    @SuppressWarnings("deprecation")
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
-		addPreferencesFromResource(R.xml.advanced_preferences);
+        addPreferencesFromResource(R.xml.advanced_preferences);
 
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         Preference pref = findPreference("pref_rng");
-        if(PreferenceManager.getDefaultSharedPreferences(this).getString("pref_rng", "").equals("sevenbag"))
-        	pref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[0]);//"7-Bag-Randomization");
-        else
-        	pref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[1]);
+		if (PreferenceManager.getDefaultSharedPreferences(this).getString("pref_rng", "").equals("sevenbag")) {
+			pref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[0]);//"7-Bag-Randomization");
+		} else {
+			pref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[1]);
+		}
 
         pref = findPreference("pref_fpslimittext");
         pref.setSummary(PreferenceManager.getDefaultSharedPreferences(this).getString("pref_fpslimittext", ""));
-	}
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,String key) {
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-		if (key.equals("pref_rng")) {
+        if (key.equals("pref_rng")) {
             Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
-            if(sharedPreferences.getString(key, "").equals("sevenbag"))
-            	connectionPref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[0]);//"7-Bag-Randomization");
-            else
-            	connectionPref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[1]);
+			if (sharedPreferences.getString(key, "").equals("sevenbag")) {
+				connectionPref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[0]);//"7-Bag-Randomization");
+			} else {
+				connectionPref.setSummary(getResources().getStringArray(R.array.randomizer_preference_array)[1]);
+			}
         }
-		if (key.equals("pref_fpslimittext")) {
+        if (key.equals("pref_fpslimittext")) {
             Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
             connectionPref.setSummary(sharedPreferences.getString(key, ""));
         }
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		finish();
-		return true;
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	protected void onResume() {
-	    super.onResume();
-	    getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	protected void onPause() {
-	    super.onPause();
-	    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
 }

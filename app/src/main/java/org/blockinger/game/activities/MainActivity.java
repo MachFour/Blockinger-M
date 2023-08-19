@@ -62,208 +62,212 @@ import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 public class MainActivity extends ListActivity {
 
-	public static final int SCORE_REQUEST = 0x0;
+    public static final int SCORE_REQUEST = 0x0;
 
-	/** This key is used to access the player name, which is returned as an Intent from the gameactivity upon completion (gameover).
-	 *  The Package Prefix is mandatory for Intent data
-	 */
-	public static final String PLAYERNAME_KEY = "org.blockinger.game.activities.playername";
+    /**
+     * This key is used to access the player name, which is returned as an Intent from the gameactivity upon completion (gameover).
+     * The Package Prefix is mandatory for Intent data
+     */
+    public static final String PLAYERNAME_KEY = "org.blockinger.game.activities.playername";
 
-	/** This key is used to access the player name, which is returned as an Intent from the gameactivity upon completion (gameover).
-	 *  The Package Prefix is mandatory for Intent data
-	 */
-	public static final String SCORE_KEY = "org.blockinger.game.activities.score";
+    /**
+     * This key is used to access the player name, which is returned as an Intent from the gameactivity upon completion (gameover).
+     * The Package Prefix is mandatory for Intent data
+     */
+    public static final String SCORE_KEY = "org.blockinger.game.activities.score";
 
-	public ScoreDataSource datasource;
-	private SimpleCursorAdapter adapter;
-	private AlertDialog.Builder startLevelDialog;
-	private AlertDialog.Builder donateDialog;
-	private int startLevel;
-	private TextView leveldialogtext;
-	private Sound sound;
+    public ScoreDataSource datasource;
+    private SimpleCursorAdapter adapter;
+    private AlertDialog.Builder startLevelDialog;
+    private AlertDialog.Builder donateDialog;
+    private int startLevel;
+    private TextView leveldialogtext;
+    private Sound sound;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		PreferenceManager.setDefaultValues(this, R.xml.simple_preferences, true);
-		PreferenceManager.setDefaultValues(this, R.xml.advanced_preferences, true);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        PreferenceManager.setDefaultValues(this, R.xml.simple_preferences, true);
+        PreferenceManager.setDefaultValues(this, R.xml.advanced_preferences, true);
 
-		/* Create Music */
-		sound = new Sound(this);
-		sound.startMusic(Sound.MENU_MUSIC, 0);
+        /* Create Music */
+        sound = new Sound(this);
+        sound.startMusic(Sound.MENU_MUSIC, 0);
 
-		/* Database Management */
-		Cursor mc;
-	    datasource = new ScoreDataSource(this);
-	    datasource.open();
-	    mc = datasource.getCursor();
-	    // Use the SimpleCursorAdapter to show the
-	    // elements in a ListView
-	    adapter = new SimpleCursorAdapter(
-	    	this,
-	        R.layout.blockinger_list_item,
-	        mc,
-	        new String[] {HighscoreOpenHelper.COLUMN_SCORE, HighscoreOpenHelper.COLUMN_PLAYERNAME},
-	        new int[] {R.id.text1, R.id.text2},
-	        SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-	    setListAdapter(adapter);
+        /* Database Management */
+        Cursor mc;
+        datasource = new ScoreDataSource(this);
+        datasource.open();
+        mc = datasource.getCursor();
+        // Use the SimpleCursorAdapter to show the
+        // elements in a ListView
+        adapter = new SimpleCursorAdapter(
+                this,
+                R.layout.blockinger_list_item,
+                mc,
+                new String[]{HighscoreOpenHelper.COLUMN_SCORE, HighscoreOpenHelper.COLUMN_PLAYERNAME},
+                new int[]{R.id.text1, R.id.text2},
+                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        setListAdapter(adapter);
 
-	    /* Create Startlevel Dialog */
-	    startLevel = 0;
-	    startLevelDialog = new AlertDialog.Builder(this);
-		startLevelDialog.setTitle(R.string.startLevelDialogTitle);
-		startLevelDialog.setCancelable(false);
-		startLevelDialog.setNegativeButton(R.string.startLevelDialogCancel, (dialog, which) -> dialog.dismiss());
-		startLevelDialog.setPositiveButton(R.string.startLevelDialogStart, (dialog, which) -> MainActivity.this.start());
+        /* Create Startlevel Dialog */
+        startLevel = 0;
+        startLevelDialog = new AlertDialog.Builder(this);
+        startLevelDialog.setTitle(R.string.startLevelDialogTitle);
+        startLevelDialog.setCancelable(false);
+        startLevelDialog.setNegativeButton(R.string.startLevelDialogCancel, (dialog, which) -> dialog.dismiss());
+        startLevelDialog.setPositiveButton(R.string.startLevelDialogStart, (dialog, which) -> MainActivity.this.start());
 
-		/* Create Donate Dialog */
-	    donateDialog = new AlertDialog.Builder(this);
-	    donateDialog.setTitle(R.string.pref_donate_title);
-	    donateDialog.setMessage(R.string.pref_donate_summary);
-	    donateDialog.setNegativeButton(R.string.startLevelDialogCancel, (dialog, which) -> dialog.dismiss());
-	    donateDialog.setPositiveButton(R.string.donate_button, (dialog, which) -> {
-			String url = getResources().getString(R.string.donation_url);
-			Intent i = new Intent(Intent.ACTION_VIEW);
-			i.setData(Uri.parse(url));
-			startActivity(i);
-		});
-	}
+        /* Create Donate Dialog */
+        donateDialog = new AlertDialog.Builder(this);
+        donateDialog.setTitle(R.string.pref_donate_title);
+        donateDialog.setMessage(R.string.pref_donate_summary);
+        donateDialog.setNegativeButton(R.string.startLevelDialogCancel, (dialog, which) -> dialog.dismiss());
+        donateDialog.setPositiveButton(R.string.donate_button, (dialog, which) -> {
+            String url = getResources().getString(R.string.donation_url);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        });
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.action_settings:
-				Intent intent = new Intent(this, SettingsActivity.class);
-				startActivity(intent);
-				return true;
-			case R.id.action_about:
-				Intent intent1 = new Intent(this, AboutActivity.class);
-				startActivity(intent1);
-				return true;
-			case R.id.action_donate:
-				donateDialog.show();
-				return true;
-			case R.id.action_help:
-				Intent intent2 = new Intent(this, HelpActivity.class);
-				startActivity(intent2);
-				return true;
-			case R.id.action_exit:
-			    GameState.destroy();
-			    MainActivity.this.finish();
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_about:
+                Intent intent1 = new Intent(this, AboutActivity.class);
+                startActivity(intent1);
+                return true;
+            case R.id.action_donate:
+                donateDialog.show();
+                return true;
+            case R.id.action_help:
+                Intent intent2 = new Intent(this, HelpActivity.class);
+                startActivity(intent2);
+                return true;
+            case R.id.action_exit:
+                GameState.destroy();
+                MainActivity.this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void start() {
+        Intent intent = new Intent(this, GameActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("mode", GameActivity.NEW_GAME); //Your id
+        b.putInt("level", startLevel); //Your id
+        b.putString("playername", ((TextView) findViewById(R.id.nicknameEditView)).getText().toString()); //Your id
+        intent.putExtras(b); //Put your id to your next Intent
+        startActivityForResult(intent, SCORE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode != SCORE_REQUEST) {
+			return;
 		}
-	}
-
-	public void start() {
-		Intent intent = new Intent(this, GameActivity.class);
-		Bundle b = new Bundle();
-		b.putInt("mode", GameActivity.NEW_GAME); //Your id
-		b.putInt("level", startLevel); //Your id
-		b.putString("playername", ((TextView)findViewById(R.id.nicknameEditView)).getText().toString()); //Your id
-		intent.putExtras(b); //Put your id to your next Intent
-		startActivityForResult(intent,SCORE_REQUEST);
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode != SCORE_REQUEST)
+		if (resultCode != RESULT_OK) {
 			return;
-		if(resultCode != RESULT_OK)
-			return;
+		}
 
-		String playerName = data.getStringExtra(PLAYERNAME_KEY);
-		long score = data.getLongExtra(SCORE_KEY,0);
+        String playerName = data.getStringExtra(PLAYERNAME_KEY);
+        long score = data.getLongExtra(SCORE_KEY, 0);
 
-	    datasource.open();
-	    datasource.createScore(score, playerName);
-	}
+        datasource.open();
+        datasource.createScore(score, playerName);
+    }
 
     public void onClickStart(View view) {
-		View dialogView = getLayoutInflater().inflate(R.layout.seek_bar_dialog, null);
-		leveldialogtext = dialogView.findViewById(R.id.leveldialogleveldisplay);
-		SeekBar leveldialogBar = dialogView.findViewById(R.id.levelseekbar);
-		leveldialogBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        View dialogView = getLayoutInflater().inflate(R.layout.seek_bar_dialog, null);
+        leveldialogtext = dialogView.findViewById(R.id.leveldialogleveldisplay);
+        SeekBar leveldialogBar = dialogView.findViewById(R.id.levelseekbar);
+        leveldialogBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
-			@Override
-			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-				leveldialogtext.setText("" + arg1);
-				startLevel = arg1;
-			}
+            @Override
+            public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+                leveldialogtext.setText("" + arg1);
+                startLevel = arg1;
+            }
 
-			@Override
-			public void onStartTrackingTouch(SeekBar arg0) {
-			}
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
 
-			@Override
-			public void onStopTrackingTouch(SeekBar arg0) {
-			}
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0) {
+            }
 
-		});
-		leveldialogBar.setProgress(startLevel);
-		leveldialogtext.setText("" + startLevel);
-		startLevelDialog.setView(dialogView);
-		startLevelDialog.show();
+        });
+        leveldialogBar.setProgress(startLevel);
+        leveldialogtext.setText("" + startLevel);
+        startLevelDialog.setView(dialogView);
+        startLevelDialog.show();
     }
 
     public void onClickResume(View view) {
-		Intent intent = new Intent(this, GameActivity.class);
-		Bundle b = new Bundle();
-		b.putInt("mode", GameActivity.RESUME_GAME); //Your id
-		b.putString("playername", ((TextView)findViewById(R.id.nicknameEditView)).getText().toString()); //Your id
-		intent.putExtras(b); //Put your id to your next Intent
-		startActivityForResult(intent,SCORE_REQUEST);
+        Intent intent = new Intent(this, GameActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("mode", GameActivity.RESUME_GAME); //Your id
+        b.putString("playername", ((TextView) findViewById(R.id.nicknameEditView)).getText().toString()); //Your id
+        intent.putExtras(b); //Put your id to your next Intent
+        startActivityForResult(intent, SCORE_REQUEST);
     }
 
     @Override
     protected void onPause() {
-    	super.onPause();
-    	sound.pause();
-    	sound.setInactive(true);
+        super.onPause();
+        sound.pause();
+        sound.setInactive(true);
     }
 
-	@Override
+    @Override
     protected void onStop() {
-    	super.onStop();
-    	sound.pause();
-    	sound.setInactive(true);
-    	datasource.close();
+        super.onStop();
+        sound.pause();
+        sound.setInactive(true);
+        datasource.close();
     }
 
-	@Override
+    @Override
     protected void onDestroy() {
-    	super.onDestroy();
-    	sound.release();
-    	sound = null;
-    	datasource.close();
+        super.onDestroy();
+        sound.release();
+        sound = null;
+        datasource.close();
     }
 
-	@Override
+    @Override
     protected void onResume() {
-    	super.onResume();
-    	sound.setInactive(false);
-    	sound.resume();
-    	datasource.open();
-	    Cursor cursor = datasource.getCursor();
-	    adapter.changeCursor(cursor);
+        super.onResume();
+        sound.setInactive(false);
+        sound.resume();
+        datasource.open();
+        Cursor cursor = datasource.getCursor();
+        adapter.changeCursor(cursor);
 
-		Button resumeButton = findViewById(R.id.resumeButton);
-		if (GameState.isFinished()) {
-			resumeButton.setEnabled(false);
-			resumeButton.setTextColor(getResources().getColor(R.color.holo_grey));
-		} else {
-			resumeButton.setEnabled(true);
-			resumeButton.setTextColor(getResources().getColor(R.color.square_error));
-		}
-	}
+        Button resumeButton = findViewById(R.id.resumeButton);
+        if (GameState.isFinished()) {
+            resumeButton.setEnabled(false);
+            resumeButton.setTextColor(getResources().getColor(R.color.holo_grey));
+        } else {
+            resumeButton.setEnabled(true);
+            resumeButton.setTextColor(getResources().getColor(R.color.square_error));
+        }
+    }
 
 }

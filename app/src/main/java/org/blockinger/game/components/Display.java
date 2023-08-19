@@ -51,301 +51,307 @@ import android.preference.PreferenceManager;
 
 public class Display extends Component {
 
-	private int prevPhantomY;
-	private boolean dropPhantom;
-	private final Paint paint;
-	private int gridRowBorder;
-	private int gridColumnBorder;
-	private int squaresize;
-	private int rowOffset;
-	private final int rows;
-	private int columnOffset;
-	private final int columns;
-	private boolean landscapeInitialized;
-	private int prev_top;
-	private int prev_bottom;
-	private int prev_left;
-	private int prev_right;
-	private int textLeft;
-	private int textTop;
-	private final int textLines;
-	private int textSizeH;
-	private int textEmptySpacing;
-	private final Paint textPaint;
-	private final Rect textRect;
-	private int textHeight;
-	private final Paint popUptextPaint;
+    private int prevPhantomY;
+    private boolean dropPhantom;
+    private final Paint paint;
+    private int gridRowBorder;
+    private int gridColumnBorder;
+    private int squaresize;
+    private int rowOffset;
+    private final int rows;
+    private int columnOffset;
+    private final int columns;
+    private boolean landscapeInitialized;
+    private int prev_top;
+    private int prev_bottom;
+    private int prev_left;
+    private int prev_right;
+    private int textLeft;
+    private int textTop;
+    private final int textLines;
+    private int textSizeH;
+    private int textEmptySpacing;
+    private final Paint textPaint;
+    private final Rect textRect;
+    private int textHeight;
+    private final Paint popUptextPaint;
 
-	public Display(GameActivity ga) {
-		super(ga);
-		invalidatePhantom();
-		setPhantomY(0);
-		landscapeInitialized = false;
-	    paint = new Paint();
-		rows = host.getResources().getInteger(R.integer.zeilen);
-		columns = host.getResources().getInteger(R.integer.spalten);
+    public Display(GameActivity ga) {
+        super(ga);
+        invalidatePhantom();
+        setPhantomY(0);
+        landscapeInitialized = false;
+        paint = new Paint();
+        rows = host.getResources().getInteger(R.integer.zeilen);
+        columns = host.getResources().getInteger(R.integer.spalten);
 
-		squaresize = 1; // unknown at this point!
-		prev_top = 1; // unknown at this point!
-		prev_bottom = 1; // unknown at this point!
-		prev_left = 1; // unknown at this point!
+        squaresize = 1; // unknown at this point!
+        prev_top = 1; // unknown at this point!
+        prev_bottom = 1; // unknown at this point!
+        prev_left = 1; // unknown at this point!
 
-		prev_right = 1; // unknown at this point!
+        prev_right = 1; // unknown at this point!
 
-		rowOffset = host.getResources().getInteger(R.integer.zeilenoffset);
-		columnOffset = host.getResources().getInteger(R.integer.spaltenoffset);
+        rowOffset = host.getResources().getInteger(R.integer.zeilenoffset);
+        columnOffset = host.getResources().getInteger(R.integer.spaltenoffset);
 
-		textPaint = new Paint();
-		textRect = new Rect();
-		textPaint.setColor(host.getResources().getColor(color.white));
-		textPaint.setAlpha(host.getResources().getInteger(R.integer.textalpha));
-		textPaint.setAntiAlias(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_antialiasing", true));
-		popUptextPaint = new Paint();
-		popUptextPaint.setColor(host.getResources().getColor(color.white));
-		popUptextPaint.setAntiAlias(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_antialiasing", true));
-		popUptextPaint.setTextSize(120);
-		textSizeH = 1;
-		textHeight = 2;
-		if(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_fps", false))
+        textPaint = new Paint();
+        textRect = new Rect();
+        textPaint.setColor(host.getResources().getColor(color.white));
+        textPaint.setAlpha(host.getResources().getInteger(R.integer.textalpha));
+        textPaint.setAntiAlias(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_antialiasing", true));
+        popUptextPaint = new Paint();
+        popUptextPaint.setColor(host.getResources().getColor(color.white));
+        popUptextPaint.setAntiAlias(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_antialiasing", true));
+        popUptextPaint.setTextSize(120);
+        textSizeH = 1;
+        textHeight = 2;
+		if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_fps", false)) {
 			textLines = 10;
-		else
+		} else {
 			textLines = 8;
-	}
+		}
+    }
 
-	public void doDraw(Canvas c, int fps) {
-		if(c==null)
+    public void doDraw(Canvas c, int fps) {
+		if (c == null) {
 			return;
+		}
 
-		if (!landscapeInitialized){
-			int fpsenabled = 0;
-			if(PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_fps", false))
+        if (!landscapeInitialized) {
+            int fpsenabled = 0;
+			if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_fps", false)) {
 				fpsenabled = 1;
-
-			host.game.getBoard().invalidate();
-			//portraitInitialized = false;
-			landscapeInitialized = true;
-
-			// calculating the size of each grid square (in pixels?)
-			// first by checking how many squares fit in the available height
-			// then by checking if there is enough width to fit the required horizontal space
-			// issue: text size is not checked
-			squaresize = ((c.getHeight()-1) - 2*rowOffset)/rows;
-			int size2 = (((c.getWidth()-1) - 2*columnOffset)/(columns + 4 + host.getResources().getInteger(R.integer.padding_columns)));
-			if(size2 < squaresize) {
-				squaresize = size2;
-				rowOffset = ((c.getHeight()-1) - squaresize*rows)/2;
-			} else {
-				columnOffset = (c.getWidth() - 1 - squaresize*(host.getResources().getInteger(R.integer.padding_columns)+4+columns))/2;
-				if (columnOffset < 0) {
-					columnOffset = 0;
-				}
 			}
 
-			gridRowBorder = rowOffset + squaresize*rows;
-			gridColumnBorder = columnOffset + squaresize*columns;
-			prev_top = rowOffset;
-			prev_bottom = rowOffset + 4*squaresize;
-			prev_left = gridColumnBorder + host.getResources().getInteger(R.integer.padding_columns)*squaresize;
-			prev_right = prev_left + 4*squaresize;
-			textLeft = prev_left;
-			textTop = prev_bottom + 2*squaresize;
-			int textRight = (c.getWidth() - 1) - columnOffset;
-			int textBottom = (c.getHeight() - 1) - rowOffset - squaresize;
-			textSizeH = 1;
+            host.game.getBoard().invalidate();
+            //portraitInitialized = false;
+            landscapeInitialized = true;
 
-			// Adaptive Text Size Setup
-			textPaint.setTextSize(textSizeH + 1);
-			while(textPaint.measureText("00:00:00") < (textRight - textLeft)) {
-				//stuff
-				textPaint.getTextBounds("Level:32", 0, 6, textRect);
-				textHeight = textRect.height();
-				textEmptySpacing = ((textBottom - textTop) - (textLines*(textHeight + 3))) / (3 + fpsenabled);
-				if(textEmptySpacing < 10)
+            // calculating the size of each grid square (in pixels?)
+            // first by checking how many squares fit in the available height
+            // then by checking if there is enough width to fit the required horizontal space
+            // issue: text size is not checked
+            squaresize = ((c.getHeight() - 1) - 2 * rowOffset) / rows;
+            int size2 = (((c.getWidth() - 1) - 2 * columnOffset) / (columns + 4 + host.getResources().getInteger(R.integer.padding_columns)));
+            if (size2 < squaresize) {
+                squaresize = size2;
+                rowOffset = ((c.getHeight() - 1) - squaresize * rows) / 2;
+            } else {
+                columnOffset = (c.getWidth() - 1 - squaresize * (host.getResources().getInteger(R.integer.padding_columns) + 4 + columns)) / 2;
+                if (columnOffset < 0) {
+                    columnOffset = 0;
+                }
+            }
+
+            gridRowBorder = rowOffset + squaresize * rows;
+            gridColumnBorder = columnOffset + squaresize * columns;
+            prev_top = rowOffset;
+            prev_bottom = rowOffset + 4 * squaresize;
+            prev_left = gridColumnBorder + host.getResources().getInteger(R.integer.padding_columns) * squaresize;
+            prev_right = prev_left + 4 * squaresize;
+            textLeft = prev_left;
+            textTop = prev_bottom + 2 * squaresize;
+            int textRight = (c.getWidth() - 1) - columnOffset;
+            int textBottom = (c.getHeight() - 1) - rowOffset - squaresize;
+            textSizeH = 1;
+
+            // Adaptive Text Size Setup
+            textPaint.setTextSize(textSizeH + 1);
+            while (textPaint.measureText("00:00:00") < (textRight - textLeft)) {
+                //stuff
+                textPaint.getTextBounds("Level:32", 0, 6, textRect);
+                textHeight = textRect.height();
+                textEmptySpacing = ((textBottom - textTop) - (textLines * (textHeight + 3))) / (3 + fpsenabled);
+				if (textEmptySpacing < 10) {
 					break;
+				}
 
-				textSizeH++;
-				textPaint.setTextSize(textSizeH + 1);
-			}
-			textPaint.setTextSize(textSizeH);
-			textPaint.getTextBounds("Level:32", 0, 6, textRect);
-			textHeight = textRect.height() + 3;
-			textEmptySpacing = ((textBottom - textTop) - (textLines*(textHeight))) / (3 + fpsenabled);
+                textSizeH++;
+                textPaint.setTextSize(textSizeH + 1);
+            }
+            textPaint.setTextSize(textSizeH);
+            textPaint.getTextBounds("Level:32", 0, 6, textRect);
+            textHeight = textRect.height() + 3;
+            textEmptySpacing = ((textBottom - textTop) - (textLines * (textHeight))) / (3 + fpsenabled);
 
-			host.controls.setPreviewRect(new Rect(prev_left,prev_top,prev_right,prev_bottom));
-		}
-
-		// Background
-		//paint.setColor(host.getResources().getColor(color.background_dark));
-		//c.drawRect(0, 0, c.getWidth()-1, c.getHeight()-1, paint);
-		c.drawColor(Color.argb(0, 0, 0, 0), android.graphics.PorterDuff.Mode.CLEAR);
-
-		host.game.getBoard().draw(columnOffset, rowOffset, squaresize, c);
-
-		drawActive(columnOffset, rowOffset, squaresize, c);
-
-		if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_phantom", false)) {
-			drawPhantom(columnOffset, rowOffset, squaresize, c);
-		}
-
-	    drawGrid(columnOffset, rowOffset, gridColumnBorder, gridRowBorder, c);
-
-	    if (host.controls.isBoardTouched()) {
-			drawTouchIndicator();
-		}
-
-	    drawPreview(prev_left, prev_top, prev_right, prev_bottom, c);
-
-	    drawTextFillBox(c, fps);
-
-		if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_popup", true)) {
-			drawPopupText(c);
-		}
-	}
-
-	private void drawTouchIndicator() {
-		// TODO touch indicator on preview box
-	}
-
-	private void drawGrid(int x, int y, int xBorder, int yBorder, Canvas c) {
-
-		paint.setColor(host.getResources().getColor(color.holo_blue_dark));
-        for (int zeilePixel = 0; zeilePixel <= rows; zeilePixel ++) {
-            c.drawLine(x, y + zeilePixel*squaresize, xBorder, y + zeilePixel*squaresize, paint);
-        }
-        for (int spaltePixel = 0; spaltePixel <= columns; spaltePixel ++) {
-            c.drawLine(x + spaltePixel*squaresize, y, x + spaltePixel*squaresize, yBorder, paint);
+            host.controls.setPreviewRect(new Rect(prev_left, prev_top, prev_right, prev_bottom));
         }
 
-		//draw Border
-		paint.setColor(host.getResources().getColor(color.background_light));
-		c.drawLine(x, y, x, yBorder, paint);
-		c.drawLine(x, y, xBorder, y, paint);
-		c.drawLine(xBorder, yBorder, xBorder, y, paint);
-		c.drawLine(xBorder, yBorder, x, yBorder, paint);
-	}
+        // Background
+        //paint.setColor(host.getResources().getColor(color.background_dark));
+        //c.drawRect(0, 0, c.getWidth()-1, c.getHeight()-1, paint);
+        c.drawColor(Color.argb(0, 0, 0, 0), android.graphics.PorterDuff.Mode.CLEAR);
 
-	private void drawPreview(int left, int top, int right, int bottom, Canvas c) {
-		//Background
-		//paint.setColor(host.getResources().getColor(color.background_dark));
-		//c.drawRect(left, top, right, bottom, paint);
+        host.game.getBoard().draw(columnOffset, rowOffset, squaresize, c);
 
-		// Piece
-		drawPreview(left, top, squaresize, c);
+        drawActive(columnOffset, rowOffset, squaresize, c);
 
-		// Grid Lines
-		paint.setColor(host.getResources().getColor(color.holo_blue_dark));
-        for (int zeilePixel = 0; zeilePixel <= 4; zeilePixel ++) {
-            c.drawLine(left, top + zeilePixel*squaresize, right, top + zeilePixel*squaresize, paint);
+        if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_phantom", false)) {
+            drawPhantom(columnOffset, rowOffset, squaresize, c);
         }
-        for (int spaltePixel = 0; spaltePixel <= 4; spaltePixel ++) {
-            c.drawLine(left + spaltePixel*squaresize, top, left + spaltePixel*squaresize, bottom, paint);
+
+        drawGrid(columnOffset, rowOffset, gridColumnBorder, gridRowBorder, c);
+
+        if (host.controls.isBoardTouched()) {
+            drawTouchIndicator();
+        }
+
+        drawPreview(prev_left, prev_top, prev_right, prev_bottom, c);
+
+        drawTextFillBox(c, fps);
+
+        if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_popup", true)) {
+            drawPopupText(c);
+        }
+    }
+
+    private void drawTouchIndicator() {
+        // TODO touch indicator on preview box
+    }
+
+    private void drawGrid(int x, int y, int xBorder, int yBorder, Canvas c) {
+
+        paint.setColor(host.getResources().getColor(color.holo_blue_dark));
+        for (int zeilePixel = 0; zeilePixel <= rows; zeilePixel++) {
+            c.drawLine(x, y + zeilePixel * squaresize, xBorder, y + zeilePixel * squaresize, paint);
+        }
+        for (int spaltePixel = 0; spaltePixel <= columns; spaltePixel++) {
+            c.drawLine(x + spaltePixel * squaresize, y, x + spaltePixel * squaresize, yBorder, paint);
+        }
+
+        //draw Border
+        paint.setColor(host.getResources().getColor(color.background_light));
+        c.drawLine(x, y, x, yBorder, paint);
+        c.drawLine(x, y, xBorder, y, paint);
+        c.drawLine(xBorder, yBorder, xBorder, y, paint);
+        c.drawLine(xBorder, yBorder, x, yBorder, paint);
+    }
+
+    private void drawPreview(int left, int top, int right, int bottom, Canvas c) {
+        //Background
+        //paint.setColor(host.getResources().getColor(color.background_dark));
+        //c.drawRect(left, top, right, bottom, paint);
+
+        // Piece
+        drawPreview(left, top, squaresize, c);
+
+        // Grid Lines
+        paint.setColor(host.getResources().getColor(color.holo_blue_dark));
+        for (int zeilePixel = 0; zeilePixel <= 4; zeilePixel++) {
+            c.drawLine(left, top + zeilePixel * squaresize, right, top + zeilePixel * squaresize, paint);
+        }
+        for (int spaltePixel = 0; spaltePixel <= 4; spaltePixel++) {
+            c.drawLine(left + spaltePixel * squaresize, top, left + spaltePixel * squaresize, bottom, paint);
         }
 
         // Border
-		paint.setColor(host.getResources().getColor(color.background_light));
-		c.drawLine(left, top, right, top, paint);
-		c.drawLine(left, top, left, bottom, paint);
-		c.drawLine(right, bottom, right, top, paint);
-		c.drawLine(right, bottom, left, bottom, paint);
-	}
+        paint.setColor(host.getResources().getColor(color.background_light));
+        c.drawLine(left, top, right, top, paint);
+        c.drawLine(left, top, left, bottom, paint);
+        c.drawLine(right, bottom, right, top, paint);
+        c.drawLine(right, bottom, left, bottom, paint);
+    }
 
-	private void drawTextFillBox(Canvas c, int fps) {	
+    private void drawTextFillBox(Canvas c, int fps) {
 
-	    // draw Level Text
-		c.drawText(host.getResources().getString(R.string.level_title), textLeft, textTop + textHeight, textPaint);
-		c.drawText(host.game.getLevelString(), textLeft, textTop + 2*textHeight, textPaint);
+        // draw Level Text
+        c.drawText(host.getResources().getString(R.string.level_title), textLeft, textTop + textHeight, textPaint);
+        c.drawText(host.game.getLevelString(), textLeft, textTop + 2 * textHeight, textPaint);
 
-	    // draw Score Text
-		c.drawText(host.getResources().getString(R.string.score_title), textLeft, textTop + 3*textHeight + textEmptySpacing, textPaint);
-		c.drawText(host.game.getScoreString(), textLeft, textTop + 4*textHeight + textEmptySpacing, textPaint);
+        // draw Score Text
+        c.drawText(host.getResources().getString(R.string.score_title), textLeft, textTop + 3 * textHeight + textEmptySpacing, textPaint);
+        c.drawText(host.game.getScoreString(), textLeft, textTop + 4 * textHeight + textEmptySpacing, textPaint);
 
-		// draw Time Text
-		c.drawText(host.getResources().getString(R.string.time_title), textLeft, textTop + 5*textHeight + 2*textEmptySpacing, textPaint);
-		c.drawText(host.game.getTimeString(), textLeft, textTop + 6*textHeight + 2*textEmptySpacing, textPaint);
+        // draw Time Text
+        c.drawText(host.getResources().getString(R.string.time_title), textLeft, textTop + 5 * textHeight + 2 * textEmptySpacing, textPaint);
+        c.drawText(host.game.getTimeString(), textLeft, textTop + 6 * textHeight + 2 * textEmptySpacing, textPaint);
 
-	    // draw APM Text
-		c.drawText(host.getResources().getString(R.string.apm_title), textLeft, textTop + 7*textHeight + 3*textEmptySpacing, textPaint);
-		c.drawText(host.game.getAPMString(), textLeft, textTop + 8*textHeight + 3*textEmptySpacing, textPaint);
+        // draw APM Text
+        c.drawText(host.getResources().getString(R.string.apm_title), textLeft, textTop + 7 * textHeight + 3 * textEmptySpacing, textPaint);
+        c.drawText(host.game.getAPMString(), textLeft, textTop + 8 * textHeight + 3 * textEmptySpacing, textPaint);
 
-	    // draw FPS Text
-		if(!PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_fps", false))
+        // draw FPS Text
+		if (!PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_fps", false)) {
 			return;
-		c.drawText(host.getResources().getString(R.string.fps_title), textLeft, textTop + 9*textHeight + 4*textEmptySpacing, textPaint);
-		c.drawText("" + fps, textLeft, textTop + 10*textHeight + 4*textEmptySpacing, textPaint);
-	}
+		}
+        c.drawText(host.getResources().getString(R.string.fps_title), textLeft, textTop + 9 * textHeight + 4 * textEmptySpacing, textPaint);
+        c.drawText("" + fps, textLeft, textTop + 10 * textHeight + 4 * textEmptySpacing, textPaint);
+    }
 
-	private void drawActive(int spaltenOffset, int zeilenOffset, int spaltenAbstand,
-			Canvas c) {
-		host.game.getActivePiece().drawOnBoard(spaltenOffset, zeilenOffset, spaltenAbstand, c);
-	}
+    private void drawActive(int spaltenOffset, int zeilenOffset, int spaltenAbstand,
+                            Canvas c) {
+        host.game.getActivePiece().drawOnBoard(spaltenOffset, zeilenOffset, spaltenAbstand, c);
+    }
 
-	private void drawPhantom(int spaltenOffset, int zeilenOffset, int spaltenAbstand,
-			Canvas c) {
-		Piece active = host.game.getActivePiece();
-		int y = active.getY();
-		int x = active.getX();
-		active.setPhantom(true);
+    private void drawPhantom(int spaltenOffset, int zeilenOffset, int spaltenAbstand,
+                             Canvas c) {
+        Piece active = host.game.getActivePiece();
+        int y = active.getY();
+        int x = active.getX();
+        active.setPhantom(true);
 
-		if(dropPhantom) {
+		if (dropPhantom) {
 			int backup__currentRowIndex = host.game.getBoard().getCurrentRowIndex();
 			Row backup__currentRow = host.game.getBoard().getCurrentRow();
-			int cnt = y+1;
+			int cnt = y + 1;
 
-			while(active.setPositionSimpleCollision(x, cnt, host.game.getBoard())) {
+			while (active.setPositionSimpleCollision(x, cnt, host.game.getBoard())) {
 				cnt++;
 			}
 
-			 host.game.getBoard().setCurrentRowIndex(backup__currentRowIndex);
-			 host.game.getBoard().setCurrentRow(backup__currentRow);
-		} else
+			host.game.getBoard().setCurrentRowIndex(backup__currentRowIndex);
+			host.game.getBoard().setCurrentRow(backup__currentRow);
+		} else {
 			active.setPositionSimple(x, prevPhantomY);
+		}
 
-		prevPhantomY = active.getY();
-		active.drawOnBoard(spaltenOffset, zeilenOffset, spaltenAbstand, c);
-		active.setPositionSimple(x, y);
-		active.setPhantom(false);
-		dropPhantom = false;
-	}
+        prevPhantomY = active.getY();
+        active.drawOnBoard(spaltenOffset, zeilenOffset, spaltenAbstand, c);
+        active.setPositionSimple(x, y);
+        active.setPhantom(false);
+        dropPhantom = false;
+    }
 
-	private void drawPreview(int spaltenOffset, int zeilenOffset, int spaltenAbstand,
-			Canvas c) {
-		host.game.getPreviewPiece().drawOnPreview(spaltenOffset, zeilenOffset, spaltenAbstand, c);
-	}
+    private void drawPreview(int spaltenOffset, int zeilenOffset, int spaltenAbstand,
+                             Canvas c) {
+        host.game.getPreviewPiece().drawOnPreview(spaltenOffset, zeilenOffset, spaltenAbstand, c);
+    }
 
-	private void drawPopupText(Canvas c) {
+    private void drawPopupText(Canvas c) {
 
-		final int offset = 6;
-		final int diagonaloffset = 6;
+        final int offset = 6;
+        final int diagonaloffset = 6;
 
-		String text = host.game.getPopupString();
-		popUptextPaint.setTextSize(host.game.getPopupSize());
-		popUptextPaint.setColor(host.getResources().getColor(color.black));
-		popUptextPaint.setAlpha(host.game.getPopupAlpha());
+        String text = host.game.getPopupString();
+        popUptextPaint.setTextSize(host.game.getPopupSize());
+        popUptextPaint.setColor(host.getResources().getColor(color.black));
+        popUptextPaint.setAlpha(host.game.getPopupAlpha());
 
-		int left = columnOffset + (columns *squaresize/2) - ((int)popUptextPaint.measureText(text)/2); // middle minus half text width
-		int top = c.getHeight()/2;
+        int left = columnOffset + (columns * squaresize / 2) - ((int) popUptextPaint.measureText(text) / 2); // middle minus half text width
+        int top = c.getHeight() / 2;
 
-		c.drawText(text, offset+left, top, popUptextPaint); // right
-		c.drawText(text, diagonaloffset+left, diagonaloffset+top, popUptextPaint); // bottom right
-		c.drawText(text, left, offset+top, popUptextPaint); // bottom
-		c.drawText(text, -diagonaloffset+left, diagonaloffset+top, popUptextPaint); // bottom left
-		c.drawText(text, -offset+left, top, popUptextPaint); // left
-		c.drawText(text, -diagonaloffset+left, -diagonaloffset+top, popUptextPaint); // top left
-		c.drawText(text, left, -offset+top, popUptextPaint); // top
-		c.drawText(text, diagonaloffset+left, -diagonaloffset+top, popUptextPaint); // top right
+        c.drawText(text, offset + left, top, popUptextPaint); // right
+        c.drawText(text, diagonaloffset + left, diagonaloffset + top, popUptextPaint); // bottom right
+        c.drawText(text, left, offset + top, popUptextPaint); // bottom
+        c.drawText(text, -diagonaloffset + left, diagonaloffset + top, popUptextPaint); // bottom left
+        c.drawText(text, -offset + left, top, popUptextPaint); // left
+        c.drawText(text, -diagonaloffset + left, -diagonaloffset + top, popUptextPaint); // top left
+        c.drawText(text, left, -offset + top, popUptextPaint); // top
+        c.drawText(text, diagonaloffset + left, -diagonaloffset + top, popUptextPaint); // top right
 
-		popUptextPaint.setColor(host.game.getPopupColor());
-		popUptextPaint.setAlpha(host.game.getPopupAlpha());
-		c.drawText(text, left, top, popUptextPaint);
+        popUptextPaint.setColor(host.game.getPopupColor());
+        popUptextPaint.setAlpha(host.game.getPopupAlpha());
+        c.drawText(text, left, top, popUptextPaint);
 
-	}
+    }
 
-	public void invalidatePhantom() {
-		dropPhantom = true;
-	}
+    public void invalidatePhantom() {
+        dropPhantom = true;
+    }
 
-	public void setPhantomY(int i) {
-		prevPhantomY = i;
-	}
+    public void setPhantomY(int i) {
+        prevPhantomY = i;
+    }
 
 }

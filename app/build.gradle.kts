@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -13,6 +14,15 @@ android {
         targetSdk = 34
         versionCode = 14
         versionName = "1.8.2"
+    }
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlin.get()
     }
 
     compileOptions {
@@ -35,4 +45,25 @@ dependencies {
     implementation(libs.androidx.cursoradapter)
     implementation(libs.androidx.constraintlayout)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.foundation.layout)
+    implementation(libs.compose.material)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.activity.compose)
+    implementation(libs.androidx.collection)
+
+    // TODO was debugImplementation, figure out how to restore
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+
+
 }

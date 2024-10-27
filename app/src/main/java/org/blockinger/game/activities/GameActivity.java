@@ -37,14 +37,6 @@ b * Copyright 2013 Simon Willeke
 
 package org.blockinger.game.activities;
 
-import org.blockinger.game.BlockBoardView;
-import org.blockinger.game.R;
-import org.blockinger.game.WorkThread;
-import org.blockinger.game.components.Controls;
-import org.blockinger.game.components.Display;
-import org.blockinger.game.components.GameState;
-import org.blockinger.game.components.Sound;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -52,6 +44,14 @@ import android.view.MotionEvent;
 import android.view.Window;
 
 import androidx.fragment.app.FragmentActivity;
+
+import org.blockinger.game.BlockBoardView;
+import org.blockinger.game.R;
+import org.blockinger.game.WorkThread;
+import org.blockinger.game.components.Controls;
+import org.blockinger.game.components.Display;
+import org.blockinger.game.components.GameState;
+import org.blockinger.game.components.Sound;
 
 public class GameActivity extends FragmentActivity {
 
@@ -62,6 +62,7 @@ public class GameActivity extends FragmentActivity {
     private WorkThread mainThread;
     private DefeatDialogFragment dialog;
     private boolean layoutSwap;
+    private boolean useComposeUi;
 
     public static final int NEW_GAME = 0;
     public static final int RESUME_GAME = 1;
@@ -70,14 +71,8 @@ public class GameActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_layoutswap", false)) {
-            setContentView(R.layout.activity_game_alt);
-            layoutSwap = true;
-        } else {
-            setContentView(R.layout.activity_game);
-            layoutSwap = false;
-        }
-
+        layoutSwap = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_layoutswap", false);
+        useComposeUi = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_composeui", false);
         /* Read Starting Arguments */
         Bundle b = getIntent().getExtras();
         int value = NEW_GAME;
@@ -86,114 +81,52 @@ public class GameActivity extends FragmentActivity {
         game = (GameState) getLastCustomNonConfigurationInstance();
         if (game == null) {
             /* Check for Resuming (or Resumption?) */
-			if (b != null) {
-				value = b.getInt("mode");
-			}
+            if (b != null) {
+                value = b.getInt("mode");
+            }
 
-			if ((value == NEW_GAME)) {
-				game = GameState.getNewInstance(this);
-				game.setLevel(b.getInt("level"));
-			} else {
-				game = GameState.getInstance(this);
-			}
+            if ((value == NEW_GAME)) {
+                game = GameState.getNewInstance(this);
+                game.setLevel(b.getInt("level"));
+            } else {
+                game = GameState.getInstance(this);
+            }
         }
+
         game.reconnect(this);
         dialog = new DefeatDialogFragment();
         controls = new Controls(this);
         display = new Display(this);
         sound = new Sound(this);
 
+        if (useComposeUi) {
+            setContentView(GameUiKt.makeComposeUiView(this, game, controls, layoutSwap));
+        } else {
+            setContentView(layoutSwap ? R.layout.activity_game_alt : R.layout.activity_game);
+        }
+
+
         /* Init Components */
-		if (game.isResumable()) {
-			sound.startMusic(Sound.GAME_MUSIC, game.getSongtime());
-		}
+        if (game.isResumable()) {
+            sound.startMusic(Sound.GAME_MUSIC, game.getSongtime());
+        }
         sound.loadEffects();
-		if (b != null) {
-			value = b.getInt("mode");
-			if (b.getString("playername") != null) {
-				game.setPlayerName(b.getString("playername"));
-			}
-		} else {
-			game.setPlayerName(getResources().getString(R.string.anonymous));
-		}
+        if (b != null) {
+            value = b.getInt("mode");
+            if (b.getString("playername") != null) {
+                game.setPlayerName(b.getString("playername"));
+            }
+        } else {
+            game.setPlayerName(getResources().getString(R.string.anonymous));
+        }
         dialog.setCancelable(false);
-		if (!game.isResumable()) {
-			gameOver(game.getScore(), game.getTimeString(), game.getAPM());
-		}
+        if (!game.isResumable()) {
+            gameOver(game.getScore(), game.getTimeString(), game.getAPM());
+        }
 
-        /* Register Button callback Methods */
-        findViewById(R.id.pausebutton_1).setOnClickListener(arg0 -> GameActivity.this.finish());
-        findViewById(R.id.boardView).setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                controls.boardPressed(event.getX(), event.getY());
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                controls.boardReleased();
-            }
-            return true;
-        });
-        findViewById(R.id.rightButton).setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                controls.rightButtonPressed();
-                findViewById(R.id.rightButton).setPressed(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                controls.rightButtonReleased();
-                findViewById(R.id.rightButton).setPressed(false);
-            }
-            return true;
-        });
-        findViewById(R.id.leftButton).setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                controls.leftButtonPressed();
-                findViewById(R.id.leftButton).setPressed(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                controls.leftButtonReleased();
-                findViewById(R.id.leftButton).setPressed(false);
-            }
-            return true;
-        });
-        findViewById(R.id.softDropButton).setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                controls.downButtonPressed();
-                findViewById(R.id.softDropButton).setPressed(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                controls.downButtonReleased();
-                findViewById(R.id.softDropButton).setPressed(false);
-            }
-            return true;
-        });
-        findViewById(R.id.hardDropButton).setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                controls.dropButtonPressed();
-                findViewById(R.id.hardDropButton).setPressed(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                controls.dropButtonReleased();
-                findViewById(R.id.hardDropButton).setPressed(false);
-            }
-            return true;
-        });
-        findViewById(R.id.rotateRightButton).setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                controls.rotateRightPressed();
-                findViewById(R.id.rotateRightButton).setPressed(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                controls.rotateRightReleased();
-                findViewById(R.id.rotateRightButton).setPressed(false);
-            }
-            return true;
-        });
-        findViewById(R.id.rotateLeftButton).setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                controls.rotateLeftPressed();
-                findViewById(R.id.rotateLeftButton).setPressed(true);
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                controls.rotateLeftReleased();
-                findViewById(R.id.rotateLeftButton).setPressed(false);
-            }
-            return true;
-        });
-
-        ((BlockBoardView) findViewById(R.id.boardView)).init();
-        ((BlockBoardView) findViewById(R.id.boardView)).setHost(this);
+        if (!useComposeUi) {
+            initViewThings();
+        }
     }
 
     /**
@@ -228,9 +161,9 @@ public class GameActivity extends FragmentActivity {
      */
     public void putScore(long score) {
         String playerName = game.getPlayerName();
-		if (playerName == null || playerName.equals("")) {
-			playerName = getResources().getString(R.string.anonymous);//"Anonymous";
-		}
+        if (playerName == null || playerName.equals("")) {
+            playerName = getResources().getString(R.string.anonymous);//"Anonymous";
+        }
 
         Intent data = new Intent();
         data.putExtra(MainActivity.PLAYERNAME_KEY, playerName);
@@ -272,12 +205,17 @@ public class GameActivity extends FragmentActivity {
 
         /* Check for changed Layout */
         boolean tempswap = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_layoutswap", false);
+        boolean useCompose = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_composeui", false);
         if (layoutSwap != tempswap) {
             layoutSwap = tempswap;
-            if (layoutSwap) {
-                setContentView(R.layout.activity_game_alt);
+            if (useCompose) {
+                setContentView(GameUiKt.makeComposeUiView(getBaseContext(), game, controls, layoutSwap));
             } else {
-                setContentView(R.layout.activity_game);
+                if (layoutSwap) {
+                    setContentView(R.layout.activity_game_alt);
+                } else {
+                    setContentView(R.layout.activity_game_pause);
+                }
             }
         }
         game.setRunning(true);
@@ -293,4 +231,87 @@ public class GameActivity extends FragmentActivity {
         dialog.show(getSupportFragmentManager(), "hamster");
     }
 
+
+    private void initViewThings() {
+        /* Register Button callback Methods */
+        findViewById(R.id.pausebutton_1).setOnClickListener(arg0 -> GameActivity.this.finish());
+        findViewById(R.id.boardView).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controls.boardPressed(event.getX(), event.getY());
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                controls.boardReleased();
+            }
+            v.performClick();
+            return true;
+        });
+        findViewById(R.id.rightButton).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controls.rightButtonPressed();
+                findViewById(R.id.rightButton).setPressed(true);
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                controls.rightButtonReleased();
+                findViewById(R.id.rightButton).setPressed(false);
+            }
+            v.performClick();
+            return true;
+        });
+        findViewById(R.id.leftButton).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controls.leftButtonPressed();
+                findViewById(R.id.leftButton).setPressed(true);
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                controls.leftButtonReleased();
+                findViewById(R.id.leftButton).setPressed(false);
+            }
+            v.performClick();
+            return true;
+        });
+        findViewById(R.id.softDropButton).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controls.downButtonPressed();
+                findViewById(R.id.softDropButton).setPressed(true);
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                controls.downButtonReleased();
+                findViewById(R.id.softDropButton).setPressed(false);
+            }
+            v.performClick();
+            return true;
+        });
+        findViewById(R.id.hardDropButton).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controls.dropButtonPressed();
+                findViewById(R.id.hardDropButton).setPressed(true);
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                controls.dropButtonReleased();
+                findViewById(R.id.hardDropButton).setPressed(false);
+            }
+            v.performClick();
+            return true;
+        });
+        findViewById(R.id.rotateRightButton).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controls.rotateRightPressed();
+                findViewById(R.id.rotateRightButton).setPressed(true);
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                controls.rotateRightReleased();
+                findViewById(R.id.rotateRightButton).setPressed(false);
+            }
+            v.performClick();
+            return true;
+        });
+        findViewById(R.id.rotateLeftButton).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controls.rotateLeftPressed();
+                findViewById(R.id.rotateLeftButton).setPressed(true);
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                controls.rotateLeftReleased();
+                findViewById(R.id.rotateLeftButton).setPressed(false);
+            }
+            v.performClick();
+            return true;
+        });
+
+        ((BlockBoardView) findViewById(R.id.boardView)).init();
+        ((BlockBoardView) findViewById(R.id.boardView)).setHost(this);
+    }
 }

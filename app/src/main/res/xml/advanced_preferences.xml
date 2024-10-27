@@ -116,6 +116,11 @@
 				        android:summary="@string/pref_layoutswap_summary"
 				        android:defaultValue="false"
 				        android:title="@string/pref_layoutswap_title" />
+					<CheckBoxPreference
+						android:key="pref_composeui"
+						android:summary="@string/pref_composeui_summary"
+						android:defaultValue="false"
+						android:title="@string/pref_composeui_title" />
 
     		</PreferenceCategory>
 

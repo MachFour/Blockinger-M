@@ -367,7 +367,7 @@ public class Sound implements OnAudioFocusChangeListener {
         soundPool.release();
         soundPool = null;
         isMusicReady = false;
-		if (musicPlayer != null) {
+        if (musicPlayer != null) {
 			musicPlayer.release();
 		}
         musicPlayer = null;

@@ -89,16 +89,16 @@ public class Controls extends Component {
         } catch (NumberFormatException e) {
             vibrationOffset = 0;
         }
-		if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_accelerationH", true)) {
-			initialHIntervalFactor = 2;
-		} else {
-			initialHIntervalFactor = 1;
-		}
-		if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_accelerationV", true)) {
-			initialVIntervalFactor = 2;
-		} else {
-			initialVIntervalFactor = 1;
-		}
+        if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_accelerationH", true)) {
+            initialHIntervalFactor = 2;
+        } else {
+            initialHIntervalFactor = 1;
+        }
+        if (PreferenceManager.getDefaultSharedPreferences(host).getBoolean("pref_accelerationV", true)) {
+            initialVIntervalFactor = 2;
+        } else {
+            initialVIntervalFactor = 1;
+        }
         playerSoftDrop = false;
         leftMove = false;
         rightMove = false;
@@ -115,15 +115,15 @@ public class Controls extends Component {
     }
 
     public void vibrateWall() {
-		if (v == null) {
-			return;
-		}
-		if (!eventVibrationEnabled) {
-			return;
-		}
-		if (((AudioManager) host.getSystemService(Context.AUDIO_SERVICE)).getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
-			return;
-		}
+        if (v == null) {
+            return;
+        }
+        if (!eventVibrationEnabled) {
+            return;
+        }
+        if (((AudioManager) host.getSystemService(Context.AUDIO_SERVICE)).getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
+            return;
+        }
         v.vibrate(host.game.getMoveInterval() + vibrationOffset);
     }
 
@@ -132,29 +132,29 @@ public class Controls extends Component {
     }
 
     public void vibrateBottom() {
-		if (v == null) {
-			return;
-		}
-		if (!eventVibrationEnabled) {
-			return;
-		}
-		if (((AudioManager) host.getSystemService(Context.AUDIO_SERVICE)).getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
-			return;
-		}
+        if (v == null) {
+            return;
+        }
+        if (!eventVibrationEnabled) {
+            return;
+        }
+        if (((AudioManager) host.getSystemService(Context.AUDIO_SERVICE)).getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
+            return;
+        }
         v.cancel();
         v.vibrate(new long[]{0, 5 + vibrationOffset, 30 + vibrationOffset, 20 + vibrationOffset}, -1);
     }
 
     public void vibrateShort() {
-		if (v == null) {
-			return;
-		}
-		if (!buttonVibrationEnabled) {
-			return;
-		}
-		if (((AudioManager) host.getSystemService(Context.AUDIO_SERVICE)).getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
-			return;
-		}
+        if (v == null) {
+            return;
+        }
+        if (!buttonVibrationEnabled) {
+            return;
+        }
+        if (((AudioManager) host.getSystemService(Context.AUDIO_SERVICE)).getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
+            return;
+        }
         if ((host.game.getTime() - shortVibeTime) > (host.getResources().getInteger(R.integer.shortVibeInterval) + vibrationOffset)) {
             shortVibeTime = host.game.getTime();
             v.vibrate(vibrationOffset);
@@ -201,14 +201,14 @@ public class Controls extends Component {
     }
 
     public void dropButtonPressed() {
-		if (!host.game.getActivePiece().isActive()) {
-			return;
-		}
+        if (!host.game.getActivePiece().isActive()) {
+            return;
+        }
         host.game.action();
         playerHardDrop = true;
-		if (buttonVibrationEnabled & !eventVibrationEnabled) {
-			vibrateShort();
-		}
+        if (buttonVibrationEnabled & !eventVibrationEnabled) {
+            vibrateShort();
+        }
     }
 
     public void leftButtonReleased() {
@@ -260,9 +260,9 @@ public class Controls extends Component {
         }
 
         // Reset Move Time
-		if ((!leftMove && !rightMove) && (!continuousLeftMove && !continuousRightMove)) {
-			host.game.setNextPlayerMoveTime(gameTime);
-		}
+        if ((!leftMove && !rightMove) && (!continuousLeftMove && !continuousRightMove)) {
+            host.game.setNextPlayerMoveTime(gameTime);
+        }
 
         // Left Move
         if (leftMove) {
@@ -336,9 +336,9 @@ public class Controls extends Component {
             board.invalidate();
             playerHardDrop = false;
 
-			if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
-				host.game.nextLevel();
-			}
+            if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
+                host.game.nextLevel();
+            }
             host.game.setNextDropTime(gameTime + host.game.getAutoDropInterval());
             host.game.setNextPlayerDropTime(gameTime);
 
@@ -355,9 +355,9 @@ public class Controls extends Component {
             } else {
                 host.game.incSoftDropCounter();
             }
-			if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
-				host.game.nextLevel();
-			}
+            if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
+                host.game.nextLevel();
+            }
             host.game.setNextDropTime(host.game.getNextPlayerDropTime() + host.game.getAutoDropInterval());
             host.game.setNextPlayerDropTime(host.game.getNextPlayerDropTime() + initialVIntervalFactor * host.game.getSoftDropInterval());
 
@@ -373,9 +373,9 @@ public class Controls extends Component {
                 } else {
                     host.game.incSoftDropCounter();
                 }
-				if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
-					host.game.nextLevel();
-				}
+                if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
+                    host.game.nextLevel();
+                }
                 host.game.setNextDropTime(host.game.getNextPlayerDropTime() + host.game.getAutoDropInterval());
                 host.game.setNextPlayerDropTime(host.game.getNextPlayerDropTime() + host.game.getSoftDropInterval());
 
@@ -388,9 +388,9 @@ public class Controls extends Component {
                     host.game.pieceTransition(eventVibrationEnabled);
                     board.invalidate();
                 }
-				if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
-					host.game.nextLevel();
-				}
+                if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
+                    host.game.nextLevel();
+                }
                 host.game.setNextDropTime(host.game.getNextDropTime() + host.game.getAutoDropInterval());
                 host.game.setNextPlayerDropTime(host.game.getNextDropTime() + host.game.getSoftDropInterval());
             }
@@ -403,22 +403,22 @@ public class Controls extends Component {
 
             // Autodrop if no playerDrop
         } else if (gameTime >= host.game.getNextDropTime()) {
-			if (!active.drop(board)) {
-				// piece finished
-				vibrateBottom();
-				host.game.clearLines(false, 0);
-				host.game.pieceTransition(eventVibrationEnabled);
-				board.invalidate();
-			}
-			if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
-				host.game.nextLevel();
-			}
-			host.game.setNextDropTime(host.game.getNextDropTime() + host.game.getAutoDropInterval());
-			host.game.setNextPlayerDropTime(host.game.getNextDropTime());
+            if (!active.drop(board)) {
+                // piece finished
+                vibrateBottom();
+                host.game.clearLines(false, 0);
+                host.game.pieceTransition(eventVibrationEnabled);
+                board.invalidate();
+            }
+            if ((host.game.getLevel() < maxLevel) && (host.game.getClearedLines() > lineThresholds[Math.min(host.game.getLevel(), maxLevel - 1)])) {
+                host.game.nextLevel();
+            }
+            host.game.setNextDropTime(host.game.getNextDropTime() + host.game.getAutoDropInterval());
+            host.game.setNextPlayerDropTime(host.game.getNextDropTime());
 
-		} else {
-			host.game.setNextPlayerDropTime(gameTime);
-		}
+        } else {
+            host.game.setNextPlayerDropTime(gameTime);
+        }
     }
 
     /**
@@ -448,15 +448,15 @@ public class Controls extends Component {
     }
 
     public void boardPressed(float x, float y) {
-		if (previewBox == null) {
-			return;
-		}
+        if (previewBox == null) {
+            return;
+        }
 
         boardTouched = true;
 
-		if (previewBox.contains((int) x, (int) y)) {
-			host.game.hold();
-		}
+        if (previewBox.contains((int) x, (int) y)) {
+            host.game.hold();
+        }
     }
 
     public void boardReleased() {

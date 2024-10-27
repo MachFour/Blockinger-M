@@ -39,7 +39,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <supports-screens android:normalScreens="true" android:smallScreens="true" android:largeScreens="true" android:resizeable="true" android:anyDensity="true" android:xlargeScreens="true"/>
+    <supports-screens
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:largeScreens="true"
+        android:resizeable="true"
+        android:anyDensity="true"
+        android:xlargeScreens="true"/>
 
     <application
         android:allowBackup="true"
@@ -54,7 +60,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

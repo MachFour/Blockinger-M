@@ -61,7 +61,8 @@ public class GameActivity extends FragmentActivity {
     public GameState game;
     private WorkThread mainThread;
     private DefeatDialogFragment dialog;
-    private boolean layoutSwap;
+    private boolean hardDropOnLeft;
+    private boolean pauseOnBottom;
     private boolean useComposeUi;
 
     public static final int NEW_GAME = 0;
@@ -71,7 +72,8 @@ public class GameActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        layoutSwap = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_layoutswap", false);
+        hardDropOnLeft = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_layoutswap", false);
+        pauseOnBottom = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pause_on_bottom", false);
         useComposeUi = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_composeui", false);
         /* Read Starting Arguments */
         Bundle b = getIntent().getExtras();
@@ -100,9 +102,9 @@ public class GameActivity extends FragmentActivity {
         sound = new Sound(this);
 
         if (useComposeUi) {
-            setContentView(GameUiKt.makeComposeUiView(this, game, controls, layoutSwap));
+            setContentView(GameUiKt.makeComposeUiView(this, game, controls, hardDropOnLeft, pauseOnBottom));
         } else {
-            setContentView(layoutSwap ? R.layout.activity_game_alt : R.layout.activity_game);
+            setContentView(hardDropOnLeft ? R.layout.activity_game_alt : R.layout.activity_game);
         }
 
 
@@ -206,12 +208,12 @@ public class GameActivity extends FragmentActivity {
         /* Check for changed Layout */
         boolean tempswap = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_layoutswap", false);
         boolean useCompose = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_composeui", false);
-        if (layoutSwap != tempswap) {
-            layoutSwap = tempswap;
+        if (hardDropOnLeft != tempswap) {
+            hardDropOnLeft = tempswap;
             if (useCompose) {
-                setContentView(GameUiKt.makeComposeUiView(getBaseContext(), game, controls, layoutSwap));
+                setContentView(GameUiKt.makeComposeUiView(getBaseContext(), game, controls, hardDropOnLeft, pauseOnBottom));
             } else {
-                if (layoutSwap) {
+                if (hardDropOnLeft) {
                     setContentView(R.layout.activity_game_alt);
                 } else {
                     setContentView(R.layout.activity_game_pause);

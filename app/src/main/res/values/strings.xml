@@ -146,6 +146,9 @@
     <string name="pref_layoutswap_summary">Swap the position of soft drop button and hard drop button</string>
     <string name="pref_layoutswap_title">Swap Drop Buttons</string>
 
+    <string name="pref_pause_on_bottom_summary">Position the pause button at the bottom of the screen in landscape mode</string>
+    <string name="pref_pause_on_bottom_title">Pause on bottom</string>
+
     <string name="pref_composeui_summary">Use new UI for game display</string>
     <string name="pref_composeui_title">Use new UI</string>
 

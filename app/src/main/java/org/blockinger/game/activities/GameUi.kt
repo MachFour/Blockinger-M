@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -19,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.NoOpUpdate
@@ -40,7 +40,13 @@ val LocalControls = staticCompositionLocalOf<Controls?> {
     null
 }
 
-fun makeComposeUiView(c: Context, g: GameState, ctls: Controls, swapLayout: Boolean): ComposeView {
+fun makeComposeUiView(
+    c: Context,
+    g: GameState,
+    ctls: Controls,
+    hardDropOnLeft: Boolean,
+    pauseOnBottom: Boolean,
+): ComposeView {
     val mp = ViewGroup.LayoutParams.MATCH_PARENT
     return ComposeView(c).apply {
         layoutParams = ViewGroup.LayoutParams(mp, mp)
@@ -49,7 +55,7 @@ fun makeComposeUiView(c: Context, g: GameState, ctls: Controls, swapLayout: Bool
                 LocalGameState provides g,
                 LocalControls provides ctls,
             ) {
-                GameUi(Modifier.fillMaxSize(), swapLayout)
+                GameUi(Modifier.fillMaxSize(), hardDropOnLeft, pauseOnBottom)
             }
         }
     }
@@ -95,8 +101,21 @@ val WideLayoutGuidelinePositions = GameUiGuidelinePositions(
     boardRight = 0.76f
 )
 
+val WideLayoutGuidelinePositionsPauseBottom = GameUiGuidelinePositions(
+    controlsTop = 0.11f,
+    controlsUpperMid = 0.54f,
+    controlsLowerMid = 0.58f,
+    controlsBottom = 0.83f,
+    controlsLeft = 0.24f,
+    controlsRight = 0.76f,
+    boardTop = 0.0f,
+    boardBottom = 1.0f,
+    boardLeft = 0.24f,
+    boardRight = 0.76f
+)
+
 @Composable
-fun GameUi(modifier: Modifier = Modifier, hardDropOnLeft: Boolean) {
+fun GameUi(modifier: Modifier = Modifier, hardDropOnLeft: Boolean, pauseOnBottom: Boolean) {
     // TODO improve logic?
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val wide = screenWidth.dp >= 600.dp
@@ -104,136 +123,145 @@ fun GameUi(modifier: Modifier = Modifier, hardDropOnLeft: Boolean) {
     Scaffold(
         containerColor = Color.Transparent,
     ) { padding ->
-        if (wide) {
+        val guidelinePositions = if (wide && pauseOnBottom) {
+            WideLayoutGuidelinePositionsPauseBottom
+        } else if (wide) {
+            WideLayoutGuidelinePositions
         } else {
-            NarrowGameUi(
-                hardDropOnLeft = hardDropOnLeft,
-                modifier = modifier.padding(padding)
-            )
+            NarrowLayoutGuidelinePositions
         }
-    }
-}
 
-@Composable
-fun NarrowGameUi(
-    hardDropOnLeft: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    val guidelinePositions = NarrowLayoutGuidelinePositions
+        ConstraintLayout(modifier = modifier.padding(padding)) {
+            val controlsTopGuideline = createGuidelineFromTop(guidelinePositions.controlsTop)
+            val controlsUpperMidGuideline =
+                createGuidelineFromTop(guidelinePositions.controlsUpperMid)
+            val controlsLowerMidGuideline =
+                createGuidelineFromTop(guidelinePositions.controlsLowerMid)
+            val controlsBottomGuideline = createGuidelineFromTop(guidelinePositions.controlsBottom)
+            val controlsLeftGuideline =
+                createGuidelineFromAbsoluteLeft(guidelinePositions.controlsLeft)
+            val controlsRightGuideline =
+                createGuidelineFromAbsoluteLeft(guidelinePositions.controlsRight)
 
-    ConstraintLayout(modifier) {
-        val controlsTopGuideline = createGuidelineFromTop(guidelinePositions.controlsTop)
-        val controlsUpperMidGuideline = createGuidelineFromTop(guidelinePositions.controlsUpperMid)
-        val controlsLowerMidGuideline = createGuidelineFromTop(guidelinePositions.controlsLowerMid)
-        val controlsBottomGuideline = createGuidelineFromTop(guidelinePositions.controlsBottom)
-        val controlsLeftGuideline = createGuidelineFromAbsoluteLeft(guidelinePositions.controlsLeft)
-        val controlsRightGuideline = createGuidelineFromAbsoluteLeft(guidelinePositions.controlsRight)
+            val boardTopGuideline = createGuidelineFromTop(guidelinePositions.boardTop)
+            val boardBottomGuideline = createGuidelineFromTop(guidelinePositions.boardBottom)
+            val boardLeftGuideline = createGuidelineFromAbsoluteLeft(guidelinePositions.boardLeft)
+            val boardRightGuideline = createGuidelineFromAbsoluteLeft(guidelinePositions.boardRight)
 
-        val boardTopGuideline = createGuidelineFromTop(guidelinePositions.boardTop)
-        val boardBottomGuideline = createGuidelineFromTop(guidelinePositions.boardBottom)
-        val boardLeftGuideline = createGuidelineFromAbsoluteLeft(guidelinePositions.boardLeft)
-        val boardRightGuideline = createGuidelineFromAbsoluteLeft(guidelinePositions.boardRight)
+            val boardView = createRef()
+            val (moveLeftButton, moveRightButton) = createRefs()
+            val (rotateLeftButton, rotateRightButton) = createRefs()
+            val (softDropButton, hardDropButton) = createRefs()
+            val pauseButton = createRef()
 
-        val boardView = createRef()
-        val (moveLeftButton, moveRightButton) = createRefs()
-        val (rotateLeftButton, rotateRightButton) = createRefs()
-        val (softDropButton, hardDropButton) = createRefs()
-        val pauseButton = createRef()
-
-        MoveLeftButton(
-            modifier = Modifier.constrainAs(moveLeftButton) {
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-                absoluteLeft.linkTo(parent.absoluteLeft, 4.dp)
-                absoluteRight.linkTo(moveRightButton.absoluteLeft, 4.dp)
-                horizontalChainWeight = 0.5f
-                top.linkTo(controlsTopGuideline, 4.dp)
-                bottom.linkTo(controlsUpperMidGuideline, 4.dp)
-            },
-        )
-        MoveRightButton(
-            modifier = Modifier.constrainAs(moveRightButton) {
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-                absoluteLeft.linkTo(moveLeftButton.absoluteRight, 4.dp)
-                absoluteRight.linkTo(controlsLeftGuideline, 4.dp)
-                horizontalChainWeight = 0.5f
-                top.linkTo(controlsTopGuideline, 4.dp)
-                bottom.linkTo(controlsUpperMidGuideline, 4.dp)
-            },
-        )
-        RotateLeftButton(
-            modifier = Modifier.constrainAs(rotateLeftButton) {
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-                absoluteLeft.linkTo(controlsRightGuideline, 4.dp)
-                absoluteRight.linkTo(rotateRightButton.absoluteLeft, 4.dp)
-                horizontalChainWeight = 0.5f
-                top.linkTo(controlsTopGuideline, 4.dp)
-                bottom.linkTo(controlsUpperMidGuideline, 4.dp)
-            },
-        )
-        RotateRightButton(
-            modifier = Modifier.constrainAs(rotateRightButton) {
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-                absoluteLeft.linkTo(rotateLeftButton.absoluteRight, 4.dp)
-                absoluteRight.linkTo(parent.absoluteRight, 4.dp)
-                horizontalChainWeight = 0.5f
-                top.linkTo(controlsTopGuideline, 4.dp)
-                bottom.linkTo(controlsUpperMidGuideline, 4.dp)
-            },
-        )
-        SoftDropButton(
-            modifier = Modifier.constrainAs(softDropButton) {
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-                if (hardDropOnLeft) {
-                    absoluteLeft.linkTo(controlsRightGuideline, 4.dp)
-                    absoluteRight.linkTo(parent.absoluteRight, 4.dp)
-                } else {
+            MoveLeftButton(
+                modifier = Modifier.constrainAs(moveLeftButton) {
+                    height = Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
                     absoluteLeft.linkTo(parent.absoluteLeft, 4.dp)
+                    absoluteRight.linkTo(moveRightButton.absoluteLeft, 4.dp)
+                    horizontalChainWeight = 0.5f
+                    top.linkTo(controlsTopGuideline, 4.dp)
+                    bottom.linkTo(controlsUpperMidGuideline, 4.dp)
+                },
+            )
+            MoveRightButton(
+                modifier = Modifier.constrainAs(moveRightButton) {
+                    height = Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
+                    absoluteLeft.linkTo(moveLeftButton.absoluteRight, 4.dp)
                     absoluteRight.linkTo(controlsLeftGuideline, 4.dp)
-                }
-                top.linkTo(controlsLowerMidGuideline, 4.dp)
-                bottom.linkTo(controlsBottomGuideline, 4.dp)
-            },
-        )
-        HardDropButton(
-            modifier = Modifier.constrainAs(hardDropButton) {
-                height = Dimension.fillToConstraints
-                width = Dimension.fillToConstraints
-                if (hardDropOnLeft) {
-                    absoluteLeft.linkTo(parent.absoluteLeft, 4.dp)
-                    absoluteRight.linkTo(controlsLeftGuideline, 4.dp)
-                } else {
+                    horizontalChainWeight = 0.5f
+                    top.linkTo(controlsTopGuideline, 4.dp)
+                    bottom.linkTo(controlsUpperMidGuideline, 4.dp)
+                },
+            )
+            RotateLeftButton(
+                modifier = Modifier.constrainAs(rotateLeftButton) {
+                    height = Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
                     absoluteLeft.linkTo(controlsRightGuideline, 4.dp)
+                    absoluteRight.linkTo(rotateRightButton.absoluteLeft, 4.dp)
+                    horizontalChainWeight = 0.5f
+                    top.linkTo(controlsTopGuideline, 4.dp)
+                    bottom.linkTo(controlsUpperMidGuideline, 4.dp)
+                },
+            )
+            RotateRightButton(
+                modifier = Modifier.constrainAs(rotateRightButton) {
+                    height = Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
+                    absoluteLeft.linkTo(rotateLeftButton.absoluteRight, 4.dp)
                     absoluteRight.linkTo(parent.absoluteRight, 4.dp)
+                    horizontalChainWeight = 0.5f
+                    top.linkTo(controlsTopGuideline, 4.dp)
+                    bottom.linkTo(controlsUpperMidGuideline, 4.dp)
+                },
+            )
+            SoftDropButton(
+                modifier = Modifier.constrainAs(softDropButton) {
+                    height = Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
+                    if (hardDropOnLeft) {
+                        absoluteLeft.linkTo(controlsRightGuideline, 4.dp)
+                        absoluteRight.linkTo(parent.absoluteRight, 4.dp)
+                    } else {
+                        absoluteLeft.linkTo(parent.absoluteLeft, 4.dp)
+                        absoluteRight.linkTo(controlsLeftGuideline, 4.dp)
+                    }
+                    top.linkTo(controlsLowerMidGuideline, 4.dp)
+                    bottom.linkTo(controlsBottomGuideline, 4.dp)
+                },
+            )
+            HardDropButton(
+                modifier = Modifier.constrainAs(hardDropButton) {
+                    height = Dimension.fillToConstraints
+                    width = Dimension.fillToConstraints
+                    if (hardDropOnLeft) {
+                        absoluteLeft.linkTo(parent.absoluteLeft, 4.dp)
+                        absoluteRight.linkTo(controlsLeftGuideline, 4.dp)
+                    } else {
+                        absoluteLeft.linkTo(controlsRightGuideline, 4.dp)
+                        absoluteRight.linkTo(parent.absoluteRight, 4.dp)
+                    }
+                    top.linkTo(controlsLowerMidGuideline, 4.dp)
+                    bottom.linkTo(controlsBottomGuideline, 4.dp)
+                },
+            )
+
+
+            PauseButton(
+                modifier = Modifier.constrainAs(pauseButton) {
+                    width = Dimension.fillToConstraints
+                    height = Dimension.value(48.dp)
+                    if (wide) {
+                        absoluteLeft.linkTo(controlsRightGuideline, 4.dp)
+                        absoluteRight.linkTo(parent.absoluteRight, 4.dp)
+                        if (pauseOnBottom) {
+                            top.linkTo(controlsBottomGuideline, 4.dp)
+                            bottom.linkTo(parent.bottom, 4.dp)
+                        } else {
+                            top.linkTo(parent.top, 4.dp)
+                            bottom.linkTo(controlsTopGuideline, 4.dp)
+                        }
+                    } else {
+                        top.linkTo(controlsTopGuideline, 4.dp)
+                        absoluteLeft.linkTo(controlsLeftGuideline, 4.dp)
+                        absoluteRight.linkTo(controlsRightGuideline, 4.dp)
+                    }
                 }
-                top.linkTo(controlsLowerMidGuideline, 4.dp)
-                bottom.linkTo(controlsBottomGuideline, 4.dp)
-            },
-        )
+            )
 
-
-        PauseButton(
-            modifier = Modifier.height(48.dp).constrainAs(pauseButton) {
-                width = Dimension.fillToConstraints
-                top.linkTo(controlsTopGuideline, 4.dp)
-                absoluteLeft.linkTo(controlsLeftGuideline, 4.dp)
-                absoluteRight.linkTo(controlsRightGuideline, 4.dp)
-            }
-        )
-
-        Box(Modifier.constrainAs(boardView) {
+            Box(Modifier.constrainAs(boardView) {
                 height = Dimension.fillToConstraints
                 width = Dimension.fillToConstraints
                 absoluteLeft.linkTo(boardLeftGuideline)
                 absoluteRight.linkTo(boardRightGuideline)
                 top.linkTo(boardTopGuideline)
                 bottom.linkTo(boardBottomGuideline)
-        }) {
-            BoardView(modifier = Modifier.fillMaxSize())
+            }) {
+                BoardView(modifier = Modifier.fillMaxSize())
+            }
         }
     }
 }
@@ -263,14 +291,15 @@ private fun BoardView(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GameUiPreviewHelper(isAltLayout: Boolean) {
+fun GameUiPreviewHelper(hardDropOnLeft: Boolean, pauseOnBottom: Boolean) {
     Surface(
         color = Color.Black,
         contentColor = Color.White,
     ) {
         GameUi(
             modifier = Modifier.fillMaxSize(),
-            hardDropOnLeft = isAltLayout,
+            hardDropOnLeft = hardDropOnLeft,
+            pauseOnBottom = pauseOnBottom,
         )
     }
 }
@@ -278,13 +307,13 @@ fun GameUiPreviewHelper(isAltLayout: Boolean) {
 @Preview
 @Composable
 fun GameUiPreviewAlt() {
-    GameUiPreviewHelper(true)
+    GameUiPreviewHelper(true, true)
 }
 
-@Preview
+@PreviewScreenSizes
 @Composable
 fun GameUiPreview() {
-    GameUiPreviewHelper(false)
+    GameUiPreviewHelper(false, true)
 }
 
 internal tailrec fun Context.findActivity(): GameActivity? =
